@@ -1,4 +1,4 @@
-# ECE369_DATAPATH: CODE NAMED PROJECT_HAL_9000
+# ECE369_DATAPATH: CODE NAMED PROJECT_LAZARUS
 Verilog code for processor controller and datapath implementation
 
-HAL 9000 is a character in Arthur C. Clarke's Space Odyssey series. First appearing in 2001: A Space Odyssey, HAL (Heuristically programmed ALgorithmic computer) is a sentient computer (or artificial general intelligence) that controls the systems of the Discovery One spacecraft and interacts with the ship's astronaut crew. Part of HAL's hardware is shown towards the end of the film, but he is mostly depicted as a camera lens containing a red dot, copies of which are located throughout the ship. HAL 9000 is voiced by Douglas Rain in the two film adaptations of the Space Odyssey series and a short film voiced by Andrew Stanton. HAL speaks in a soft, calm voice and a conversational manner, in contrast to the crewmen, David Bowman and Frank Poole.
+"I never asked for this..."
