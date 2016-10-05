@@ -42,14 +42,27 @@ module InstructionMemory(Address, Instruction);
 
     output [31:0] Instruction;    // Instruction at memory location Address
     
-    reg [31:0] Instructions [127:0];
+	// Modify the size of the Instructions Array to Be The Total Lines of Code
+    reg [31:0] Instructions [14:0];
     
     integer unsigned x;
     
     initial begin
-        for(x = 0; x < 128; x = x + 1)begin
-            Instructions[x] = x * 4;
-        end
+        Instructions[0] = 32'b00000000000000000000000000000000;
+		Instructions[1] = 32'b00000000000000000000000000000000;
+		Instructions[2] = 32'b00000000000000000000000000000000;
+		Instructions[3] = 32'b00000000000000000000000000000000;
+		Instructions[4] = 32'b00000000000000000000000000000000;
+		Instructions[5] = 32'b00000000000000000000000000000000;
+		Instructions[6] = 32'b00000000000000000000000000000000;
+		Instructions[7] = 32'b00000000000000000000000000000000;
+		Instructions[8] = 32'b00000000000000000000000000000000;
+		Instructions[9] = 32'b00000000000000000000000000000000;
+		Instructions[10] = 32'b00000000000000000000000000000000;
+		Instructions[11] = 32'b00000000000000000000000000000000;
+		Instructions[12] = 32'b00000000000000000000000000000000;
+		Instructions[13] = 32'b00000000000000000000000000000000;
+		Instructions[14] = 32'b00000000000000000000000000000000;
     end
 
     assign Instruction = Instructions[Address[31:2]];
