@@ -13,9 +13,9 @@ module Adder_tb();
 
     wire [31:0] Input1, Input2;
 
-    PCAdder u0(
+    Adder Adder(
         .IN1(Input1), 
-		.IN2(32'd4)
+		.IN2(32'd4),
         .OUT(Output)
     );
 
