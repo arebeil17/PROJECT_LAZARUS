@@ -39,12 +39,30 @@ module DataMemory(Address, WriteData, Clk, MemWrite, MemRead, ReadData);
 
     input [31:0] Address; 	// Input Address 
     input [31:0] WriteData; // Data that needs to be written into the address 
-    input Clk;
+    input Clk;              // Clock Signal
     input MemWrite; 		// Control signal for memory write 
     input MemRead; 			// Control signal for memory read 
 
-    output reg[31:0] ReadData; // Contents of memory location at Address
+    output reg [31:0] ReadData; // Contents of memory location at Address
 
-    /* Please fill in the implementation here */
+    reg [8:0] memory [0:1023];
+
+    initial begin
+        
+    end
+
+    always @(posedge Clk) begin
+        if(MemWrite == 1) begin
+            memory[Address[11:2]] <= WriteData;
+        end
+    end
+    
+    always @(negedge Clk) begin
+        if(MemRead == 1) begin
+            ReadData <= memory[Address[11:2]];
+        end else begin
+            ReadData <= 32'd0;
+        end
+    end
 
 endmodule
