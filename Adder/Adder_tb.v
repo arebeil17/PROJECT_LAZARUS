@@ -3,27 +3,27 @@
 ////////////////////////////////////////////////////////////////////////////////
 // ECE369 - Computer Architecture
 // Laboratory 1 
-// Module - PCAdder_tb.v
+// Module - Adder_tb.v
 // Description - Test the 'PCAdder.v' module.
 ////////////////////////////////////////////////////////////////////////////////
 
-module PCAdder_tb();
+module Adder_tb();
 
-    reg [31:0] PCResult;
+    reg [31:0] Ouput;
 
-    wire [31:0] PCAddResult;
+    wire [31:0] Input1, Input2;
 
     PCAdder u0(
-        .PCResult(PCResult), 
-        .PCAddResult(PCAddResult)
+        .IN1(Input1), 
+		.IN2(32'd4)
+        .OUT(Output)
     );
 
 	initial begin
-	
-    PCResult <= 0;
-    #200 PCResult <= PCAddResult;
-    #200 PCResult <= PCAddResult;
-    #200 PCResult <= PCAddResult;
+		Input1 <= 0;
+		#200 Input1 <= PCAddResult;
+		#200 Input1 <= PCAddResult;
+		#200 Input1 <= PCAddResult;
 	end
 
 endmodule
