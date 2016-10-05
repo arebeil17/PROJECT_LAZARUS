@@ -32,10 +32,48 @@ module DataMemory_tb();
 	end
 
 	initial begin
-	
-    /* Please fill in the implementation here... */
-	
+        // Write a Bunch of Memory
+        MemWrite <= 1;
+        Address <= 4;
+        WriteData <= 4;
+        #20
+        Address <= 8;
+        WriteData <= 8;
+        #20
+        Address <= 12;
+        WriteData <= 12;
+        #20
+        MemWrite <= 0;
+        // Read a Bunch of Memory
+        MemRead <= 1;
+        Address <= 4;
+        #20
+        Address <= 8;
+        #20
+        Address <= 12;
+        #20
+        MemRead <= 0;
+        // (Re-)Write a Bunch of Memory
+        MemWrite <= 1;
+        Address <= 4;
+        WriteData <= 44;
+        #20
+        Address <= 8;
+        WriteData <= 88;
+        #20
+        Address <= 12;
+        WriteData <= 132;
+        #20        
+        MemWrite <= 0;
+        // (Re-)Read a Bunch of Memory
+        MemRead <= 1;
+        Address <= 4;
+        #20
+        Address <= 8;
+        #20
+        Address <= 12;
+        #20
+        MemRead <= 0;
 	end
 
 endmodule
-
