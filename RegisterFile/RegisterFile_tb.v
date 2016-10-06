@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 ////////////////////////////////////////////////////////////////////////////////
-// ECE369 - Computer Architecture
+// Computer Architecture
 // 
 // Module - RegisterFile.v
 // Description - Test the register_file
