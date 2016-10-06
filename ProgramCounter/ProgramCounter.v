@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 ////////////////////////////////////////////////////////////////////////////////
-// ECE369 - Computer Architecture
+// Computer Architecture
 // Laboratory 1
 // Module - pc_register.v
 // Description - 32-Bit program counter (PC) register.
