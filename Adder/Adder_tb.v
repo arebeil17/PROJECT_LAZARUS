@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 ////////////////////////////////////////////////////////////////////////////////
-// ECE369 - Computer Architecture
+// Computer Architecture
 // Laboratory 1 
 // Module - Adder_tb.v
 // Description - Test the 'PCAdder.v' module.
