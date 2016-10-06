@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 ////////////////////////////////////////////////////////////////////////////////
-// ECE369 - Computer Architecture
+// Computer Architecture
 // 
 // Module - Mux32Bit2To1.v
 // Description - Performs signal multiplexing between 2 32-Bit words.
