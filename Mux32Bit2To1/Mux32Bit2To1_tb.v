@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 ////////////////////////////////////////////////////////////////////////////////
-// ECE369 - Computer Architecture
+// Computer Architecture
 // 
 // Module - Mux32Bit2To1_tb.v
 // Description - Test the 32-bit 2 to 1 Mux module.
