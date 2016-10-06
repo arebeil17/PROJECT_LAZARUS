@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 ////////////////////////////////////////////////////////////////////////////////
-// ECE369 - Computer Architecture
+// Computer Architecture
 // 
 // Module - DataMemory_tb.v
 // Description - Test the 'DataMemory.v' module.
