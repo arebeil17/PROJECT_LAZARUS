@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 ////////////////////////////////////////////////////////////////////////////////
-// ECE369 - Computer Architecture
+// Computer Architecture
 // 
 // Module - SignExtension.v
 // Description - Sign extension module.
