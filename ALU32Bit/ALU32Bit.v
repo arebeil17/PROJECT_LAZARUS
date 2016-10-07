@@ -21,14 +21,33 @@
 // corresponding result of the operation based on the 32-Bit inputs, 'A', and 
 // 'B'. The 'Zero' flag is high when 'ALUResult' is '0'. The 'ALUControl' signal 
 // should determine the function of the ALU based on the table below:-
-// Op   | 'ALUControl' value
+// Op   	| 'ALUControl' value
 // ==========================
-// ADD  | 0010
-// SUB  | 0110
-// AND  | 0000
-// OR   | 0001
-// SLT  | 0111
-//
+// ADD  	| 00000
+// ADDU 	| 00001
+// SUB  	| 00010
+// MULT 	| 00011
+// MULTU	| 00100
+// AND  	| 00101
+// OR   	| 00110
+// NOR  	| 00111
+// XOR  	| 01000
+// SLL  	| 01001
+// SRL  	| 01010
+// SLLV 	| 01011
+// SLT  	| 01100
+// MOVN 	| 01101
+// MOVZ 	| 01110
+// ROTRV	| 01111
+// ROTR 	| 10000  *SAME AS SRL
+// SRA  	| 10001
+// SRAV 	| 10010
+// SLTU 	| 10011
+// MUL  	| 10100
+// MADD 	| 10101
+// MSUB 	| 10110
+// SEH_SEB  | 10111
+// 
 // NOTE:-
 // SLT (i.e., set on less than): ALUResult is '32'h000000001' if A < B.
 // 
@@ -36,7 +55,7 @@
 
 module ALU32Bit(ALUControl, A, B, ALUResult, Zero);
 
-	input [3:0] ALUControl; // control bits for ALU operation
+	input [4:0] ALUControl; // control bits for ALU operation
 	input [31:0] A, B;	    // inputs
 
 	output reg [31:0] ALUResult;	// answer
