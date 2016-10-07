@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 ////////////////////////////////////////////////////////////////////////////////
-// ECE369 - Computer Architecture
+// Computer Architecture
 // 
 // Module - ALU32Bit_tb.v
 // Description - Test the 'ALU32Bit.v' module.
