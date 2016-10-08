@@ -60,7 +60,6 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      FC_movn =  'b001011,  //movn
                      FC_movz =  'b001010,  //movz
                      FC_rotrv=  'b000110,  //rotrv
-                     //FC_rotr =  'b000010,  //rotor
                      FC_sra  =  'b000011,  //sra
                      FC_srav =  'b000111,  //srav
                      FC_sltu =  'b101011,  //sltu
@@ -88,14 +87,13 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      MOVN = 'b01101, // MOVN     | 01101
                      MOVZ = 'b01110, // MOVZ     | 01110
                      ROTRV= 'b01111, // ROTRV    | 01111
-                     //ROTR = 'b10000, // ROTR     | 10000
-                     SRA  = 'b10001, // SRA      | 10001
-                     SRAV = 'b10010, // SRAV     | 10010
-                     SLTU = 'b10011, // SLTU     | 10011
-                     MUL  = 'b10100, // MUL      | 10100
-                     MADD = 'b10101, // MADD     | 10101
-                     MSUB = 'b10110, // MSUB     | 10110
-                     SEH_SEB = 'b10111; // SEH_SEB  | 10111
+                     SRA  = 'b10000, // SRA      | 10000
+                     SRAV = 'b10001, // SRAV     | 10001
+                     SLTU = 'b10010, // SLTU     | 10010
+                     MUL  = 'b10011, // MUL      | 10011
+                     MADD = 'b10100, // MADD     | 10100
+                     MSUB = 'b10101, // MSUB     | 10101
+                     SEH_SEB = 'b10110; // SEH_SEB  | 10110
                                 
     reg [3:0] State = DC;        //init dont care
     reg [5:0] Function = FC_add; //init to add
@@ -152,9 +150,6 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                     FC_rotrv: begin  //rotrv
                         ALUControl <= ROTRV;
                     end
-//                    FC_rotr: begin  //rotor
-//                        ALUControl <= ROTR;
-//                    end
                     FC_sra: begin  //sra
                         ALUControl <= SRA;
                     end

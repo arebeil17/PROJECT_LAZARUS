@@ -60,7 +60,6 @@ module ALU_Controller_TB();
                      FC_movn =  'b001011,  //movn
                      FC_movz =  'b001010,  //movz
                      FC_rotrv=  'b000110,  //rotrv
-                     //FC_rotr =  'b000010,  //rotr
                      FC_sra  =  'b000011,  //sra
                      FC_srav =  'b000111,  //srav
                      FC_sltu =  'b101011,  //sltu
@@ -92,7 +91,6 @@ module ALU_Controller_TB();
         #50 AluOp <= DC; Funct <= FC_movn;
         #50 AluOp <= DC; Funct <= FC_movz;
         #50 AluOp <= DC; Funct <= FC_rotrv;
-        //#50 AluOp <= DC; Funct <= FC_rotr;
         #50 AluOp <= DC; Funct <= FC_sra;
         #50 AluOp <= DC; Funct <= FC_srav;
         #50 AluOp <= DC; Funct <= FC_sltu;
