@@ -31,21 +31,40 @@ module top();
         PC_Out,         // Output of ProgramCounter
         SE_Out,         // Output of SE
         ALU_Out,        // Output of ALU
-        DM_Out,         // Output of DM
-        ;
+        DM_Out;         // Output of DM
+    
     // Control Signals
     wire RegDst,        // RegDst
         ALUSrc,
         MemWrite,
         MemRead,
         MemToReg,
-        RegWrite;
+        RegWrite,
+        Branch,
+        SignExt,
+        ALUOp,
+        OPCode;
+    wire [4:0] ALUControl;
     
     // Controller(s)
-    ALU_Control ALUController(
-        );
-    DatapasthController Controller(
-        );
+    ALU_Controller ALUController(
+        .Rst(),
+        .ALUOp(ALUOp),
+        .Funct(IM_Out[5:0]),
+        .ALUControl(ALUControl));
+    DatapathController Controller(
+        .Clk(),
+        .Rst(),
+        .OpCode(OPCode),
+        .AluOp(ALUOp),
+        .RegDst(RegDst),
+        .RegWrite(RegWrite),
+        .ALUSrc(ALUSrc),
+        .MemWrite(MemWrite),
+        .MemRead(MemRead),
+        .Branch(Branch),
+        .MemToReg(MemToReg),
+        .SignExt(SignExt));
     
     // Data Path Components
     ProgramCounter PC(
@@ -79,7 +98,7 @@ module top();
         .In1(SE_Out),
         .Sel(ALUSrc));
     ALU32Bit ALU(
-        .ALUControl(),
+        .ALUControl(ALUControl),
         .InA(RV_RD1),
         .InB(ALUSrc_Out),
         .SHAMT(IM_Out[10:6]),
