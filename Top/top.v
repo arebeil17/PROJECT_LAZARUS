@@ -33,6 +33,8 @@ module top();
         ALU_Out,        // Output of ALU
         DM_Out;         // Output of DM
     
+    wire ALU_Zero;
+    
     // Control Signals
     wire RegDst,        // RegDst
         ALUSrc,
@@ -42,8 +44,7 @@ module top();
         RegWrite,
         Branch,
         SignExt,
-        ALUOp,
-        OPCode;
+        ALUOp;
     wire [4:0] ALUControl;
     
     // Controller(s)
@@ -55,7 +56,7 @@ module top();
     DatapathController Controller(
         .Clk(),
         .Rst(),
-        .OpCode(OPCode),
+        .OpCode(IM_Out[31:26]),
         .AluOp(ALUOp),
         .RegDst(RegDst),
         .RegWrite(RegWrite),
@@ -99,9 +100,11 @@ module top();
         .Sel(ALUSrc));
     ALU32Bit ALU(
         .ALUControl(ALUControl),
-        .InA(RV_RD1),
-        .InB(ALUSrc_Out),
-        .SHAMT(IM_Out[10:6]),
+        .A(RV_RD1),
+        .B(ALUSrc_Out),
+        .Shamt(IM_Out[10:6]),
+        .ALUResult(ALU_Out),
+        .Zero(ALU_Zero)
         );
     DataMemory DM(
         .Address(ALU_Out),
