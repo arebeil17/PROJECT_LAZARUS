@@ -26,17 +26,28 @@ module top();
         IM_Out,         // Ouput of IM
         RF_RD1,         // Ouptut #1 of RF
         RF_RD2,         // Output #2 of RF
-        RegDst_Out,     // Output of RegDst Mux to WR Input of RF
-        ALUSrc_Out,     // Output of ALUSrc Mux to B Input ALU
+        RegDst_Out,     // Output of RegDstMux
+        ALUSrc_Out,     // Output of ALUSrcMux
         PC_Out,         // Output of ProgramCounter
         SE_Out,         // Output of SE
         ALU_Out,        // Output of ALU
+        DM_Out,         // Output of DM
         ;
     // Control Signals
     wire RegDst,        // RegDst
         ALUSrc,
-        MemToReg;
+        MemWrite,
+        MemRead,
+        MemToReg,
+        RegWrite;
     
+    // Controller(s)
+    ALU_Control ALUController(
+        );
+    DatapasthController Controller(
+        );
+    
+    // Data Path Components
     ProgramCounter PC(
         .Address(ProgramCount),
         .PC(),
@@ -54,8 +65,8 @@ module top();
         .ReadRegister1(IM_Out[25:21]),
         .ReadRegister2(IM_Out[20:16]),
         .WriteRegister(RegDstMux_Out),
-        .WriteData(),
-        .RegWrite(),
+        .WriteData(MemToReg_Out),
+        .RegWrite(RegWrite),
         .Clk(),
         .ReadData1(RF_RD1),
         .ReadData2(RF_RD2));
@@ -67,13 +78,18 @@ module top();
         .In0(RF_RD2),
         .In1(SE_Out),
         .Sel(ALUSrc));
-    
+    ALU32Bit ALU(
+        .ALUControl(),
+        .InA(RV_RD1),
+        .InB(ALUSrc_Out),
+        .SHAMT(IM_Out[10:6]),
+        );
     DataMemory DM(
         .Address(ALU_Out),
         .WriteData(RF_RD2),
         .Clk(),
-        .MemWrite(),
-        .MemRead(),
+        .MemWrite(MemWrite),
+        .MemRead(MemRead),
         .ReadData(DM_Out));
     Mux32Bit2To1 MemToRegMux(
         .Out(MemToReg_Out),
