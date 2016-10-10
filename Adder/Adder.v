@@ -19,11 +19,11 @@
 // 4 (i.e., PCAddResult = PCResult + 4).
 ////////////////////////////////////////////////////////////////////////////////
 
-module Adder(IN1, IN2, OUT);
-    input [31:0] IN1, IN2;
+module Adder(InA, InB, Out);
+    input [31:0] InA, InB;
 
-    output [31:0] OUT;
+    output [31:0] Out;
     
-    assign OUT = IN1 + IN2;
+    assign Out = InA + InB;
 endmodule
 

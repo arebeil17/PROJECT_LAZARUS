@@ -20,9 +20,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module AND(IN1,IN2,OUT);
-    input IN1,IN2;
-    output OUT;
+module AND(InA,InB,Out);
+    input InA, InB;
+    output Out;
     
-    assign OUT = IN1 & IN2;
+    assign Out = InA & InB;
 endmodule

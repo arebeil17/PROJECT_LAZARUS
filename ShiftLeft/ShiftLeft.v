@@ -20,10 +20,10 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module ShiftLeft(INPUT,OUTPUT,SHIFT);
-    input [31:0] INPUT;
-    input [4:0] SHIFT;
-    output [31:0] OUTPUT;
+module ShiftLeft(In, Out, Shift);
+    input [31:0] In;
+    input [4:0] Shift;
+    output [31:0] Out;
     
-    assign OUTPUT = INPUT << SHIFT;
+    assign Out = In << Shift;
 endmodule
