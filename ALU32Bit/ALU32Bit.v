@@ -52,11 +52,11 @@
 // 
 ////////////////////////////////////////////////////////////////////////////////
 
-module ALU32Bit(ALUControl, A, B, SRL_Select, ALUResult, Zero);
+module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
 
 	input [4:0] ALUControl; // control bits for ALU operation
 	input [31:0] A, B;	    // inputs
-	input SRL_Select;       //21bit from instruction used for selecting ROTR or SRL
+	input[4:0] Shamt;       //21bit from instruction used for selecting ROTR or SRL
     
     reg [31:0] Hi = 0, Lo = 0;
       
@@ -130,13 +130,13 @@ module ALU32Bit(ALUControl, A, B, SRL_Select, ALUResult, Zero);
                     ALUResult <= A << B;
                 end
                 SRL: begin
-                    if(!SRL_Select) begin
-                        ALUResult <= A >> B;
+                    if(A == 0) begin
+                        ALUResult <= B >> Shamt;
                     end
                     else begin
-                        temp_1 = A >> B;
-                        if(B > 0) begin
-                            temp_2 = A << (32 - B);
+                        temp_1 = B >> Shamt;
+                        if(Shamt > 0) begin
+                            temp_2 = B << (32 - Shamt);
                             temp_1 = temp_1 | temp_2;
                         end
                         ALUResult <= temp_1;
@@ -185,8 +185,8 @@ module ALU32Bit(ALUControl, A, B, SRL_Select, ALUResult, Zero);
                 end
                 MSUB: begin
                     temp64 = $signed(A) * $signed(B);
-                    Hi <= temp64[63:32] - Hi;
-                    Lo <= temp64[31:0] - Lo;
+                    Hi <=  Hi - temp64[63:32];
+                    Lo <= Lo - temp64[31:0];
                     ALUResult <= 0; //No ALU Result defaults to zero;
                 end
                 SEH_SEB: begin
@@ -204,7 +204,7 @@ module ALU32Bit(ALUControl, A, B, SRL_Select, ALUResult, Zero);
     
     assign Zero = (ALUResult == 0) ? (1):(0);
     
-    always @(ALUControl, A, B, SRL_Select)begin
+    always @(ALUControl, A, B, Shamt)begin
         Operation <= ALUControl;
     end
 
