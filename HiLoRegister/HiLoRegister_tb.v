@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module HiLORegister_tb();
+module HiLoRegister_tb();
     reg Clk, RST, LoWriteEnable, HiWriteEnable;
     reg [31:0] HiWriteData, LoWriteData;
     

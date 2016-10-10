@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module HiLoRegisters(HiWriteEnable, LoWriteEnable, 
+module HiLoRegister(HiWriteEnable, LoWriteEnable, 
     HiWriteData, LoWriteData, HiReadData, LoReadData, Clk, Reset);
     input [31:0] HiWriteData, LoWriteData;
     output [31:0] HiReadData, LoReadData;
