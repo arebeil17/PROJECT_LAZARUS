@@ -22,7 +22,7 @@
 
 module top();
     // Data Signals
-    wire [31:0] ProgramCount,
+    wire [31:0] PC_Out,
         IM_Out,         // Ouput of IM
         RF_RD1,         // Ouptut #1 of RF
         RF_RD2,         // Output #2 of RF
@@ -31,21 +31,23 @@ module top();
         PC_Out,         // Output of ProgramCounter
         SE_Out,         // Output of SE
         ALU_Out,        // Output of ALU
-        DM_Out;         // Output of DM
-    
-    wire ALU_Zero;
+        DM_Out,         // Output of DM
+        PCI_Out,        // Output of PCI (PC Incrementer)
+        JA_Out;         // Output of JA (Jump Adder)
+    wire ALU_Zero;      // Output of ALU Zero Flag
     
     // Control Signals
-    wire RegDst,        // RegDst
-        ALUSrc,
-        MemWrite,
-        MemRead,
-        MemToReg,
-        RegWrite,
-        Branch,
-        SignExt,
-        ALUOp;
-    wire [4:0] ALUControl;
+    wire RegDst,            // RegDst Mux Control
+        ALUSrc,             // ALUSrc Mux Contorl
+        MemWrite,           // Data Memory Write Control
+        MemRead,            // Data Memory Read Control
+        MemToReg,           // MemToReg Mux Control
+        RegWrite,           // Register File Write Control
+        Branch,             // Branch Control
+        SignExt,            // Sign Extend Control
+        ALUOp,              // Controller to ALU Controller Data
+        JIMuxControl;       // PC Jump/Increment Mux Control
+    wire [4:0] ALUControl;  // ALU Controller to ALU Data
     
     // Controller(s)
     ALU_Controller ALUController(
@@ -70,7 +72,7 @@ module top();
     // Data Path Components
     ProgramCounter PC(
         .Address(ProgramCount),
-        .PC(),
+        .PC(PC_Out),
         .Reset(),
         .Clk());
     InstructionMemory IM(
@@ -118,4 +120,27 @@ module top();
         .In0(ALU_Out),
         .In1(DM_Out),
         .Sel(MemToReg));
+
+    // Program Counter Data Path
+    Adder PCI(
+        .InA(PC_Out),
+        .InB(32'd4),
+        .Out(PCI_Out));
+    ShiftLeft SL(
+        .In(SE_Out),
+        .Out(SL_Out),
+        .Shift(32'd2));
+    Adder JA(
+        .InA(PCI_Out),
+        .InB(SL_Out),
+        .Out(JA_Out));
+    AND JIMuxAnd(
+        .InA(ALU_Zero),
+        .InB(Branch),
+        .Out(JIMuxControl));
+    Mux32Bit2To1 JIMux(
+        .Out(JIMux_Out),
+        .In0(PCI_Out),
+        .In1(JA_Out),
+        .Sel(JIMuxControl));
 endmodule
