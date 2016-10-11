@@ -13,6 +13,6 @@ module SignExtension(In, Out);
     /* A 32-Bit output word */
     output [31:0] Out;
     
-    assign out = (In[15] == 0) ? (In) : (In | 'hffff0000);
+    assign Out = (In[15] == 0) ? (In) : (In | 'hffff0000);
 
 endmodule

@@ -14,6 +14,6 @@ module Mux32Bit2To1(Out, In0, In1, sel);
     input [31:0] In1;
     input sel;
 
-    assign out = (sel) ? (In1):(In0);
+    assign Out = (sel) ? (In1):(In0);
 
 endmodule

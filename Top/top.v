@@ -20,10 +20,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module top();
+module top(Clk, Rst);
+
+    input Clk, Rst;
     // Data Signals
-    wire [31:0] PC_Out,
-        IM_Out,         // Ouput of IM
+    wire [31:0] IM_Out,         // Ouput of IM
+        SL_Out,
+        JIMux_Out,
         RF_RD1,         // Ouptut #1 of RF
         RF_RD2,         // Output #2 of RF
         RegDst_Out,     // Output of RegDstMux
@@ -33,7 +36,9 @@ module top();
         ALU_Out,        // Output of ALU
         DM_Out,         // Output of DM
         PCI_Out,        // Output of PCI (PC Incrementer)
-        JA_Out;         // Output of JA (Jump Adder)
+        JA_Out,         // Output of JA (Jump Adder)
+        MemToReg_Out;   // Output
+        
     wire ALU_Zero;      // Output of ALU Zero Flag
     
     // Control Signals
@@ -45,24 +50,26 @@ module top();
         RegWrite,           // Register File Write Control
         Branch,             // Branch Control
         SignExt,            // Sign Extend Control
-        ALUOp,              // Controller to ALU Controller Data
         JIMuxControl;       // PC Jump/Increment Mux Control
+    
     wire [4:0] ALUControl;  // ALU Controller to ALU Data
+    wire [3:0] ALUOp;       // Controller to ALU Controller Data
+    
     
     // Controller(s)
     ALU_Controller ALUController(
-        .Rst(),
-        .ALUOp(ALUOp),
+        .Rst(Rst),
+        .AluOp(ALUOp),
         .Funct(IM_Out[5:0]),
         .ALUControl(ALUControl));
     DatapathController Controller(
-        .Clk(),
-        .Rst(),
+        .Clk(Clk),
+        .Rst(Rst),
         .OpCode(IM_Out[31:26]),
         .AluOp(ALUOp),
         .RegDst(RegDst),
         .RegWrite(RegWrite),
-        .ALUSrc(ALUSrc),
+        .AluSrc(ALUSrc),
         .MemWrite(MemWrite),
         .MemRead(MemRead),
         .Branch(Branch),
@@ -71,25 +78,25 @@ module top();
     
     // Data Path Components
     ProgramCounter PC(
-        .Address(ProgramCount),
+        .Address(JIMux_Out),
         .PC(PC_Out),
-        .Reset(),
-        .Clk());
+        .Reset(Rst),
+        .Clk(Clk));
     InstructionMemory IM(
-        .Address(ProgramCount),
-        .Instruction(InstructionMemOut));
+        .Address(PC_Out),
+        .Instruction(IM_Out));
     Mux32Bit2To1 RegDestMux(
-        .Out(RegDst_Out),
+        .Out(RegDst_Out[4:0]),
         .In0(IM_Out[15:10]),
         .In1(IM_Out[20:16]),
-        .Sel(RegDst));
+        .sel(RegDst));
     RegisterFile RF(
         .ReadRegister1(IM_Out[25:21]),
         .ReadRegister2(IM_Out[20:16]),
-        .WriteRegister(RegDstMux_Out),
+        .WriteRegister(RegDst_Out[4:0]),
         .WriteData(MemToReg_Out),
         .RegWrite(RegWrite),
-        .Clk(),
+        .Clk(Clk),
         .ReadData1(RF_RD1),
         .ReadData2(RF_RD2));
     SignExtension SE(
@@ -99,10 +106,10 @@ module top();
         .Out(ALUSrc_Out),
         .In0(RF_RD2),
         .In1(SE_Out),
-        .Sel(ALUSrc));
+        .sel(ALUSrc));
     ALU32Bit ALU(
         .ALUControl(ALUControl),
-        .A(RV_RD1),
+        .A(RF_RD1),
         .B(ALUSrc_Out),
         .Shamt(IM_Out[10:6]),
         .ALUResult(ALU_Out),
@@ -111,7 +118,7 @@ module top();
     DataMemory DM(
         .Address(ALU_Out),
         .WriteData(RF_RD2),
-        .Clk(),
+        .Clk(Clk),
         .MemWrite(MemWrite),
         .MemRead(MemRead),
         .ReadData(DM_Out));
@@ -119,7 +126,7 @@ module top();
         .Out(MemToReg_Out),
         .In0(ALU_Out),
         .In1(DM_Out),
-        .Sel(MemToReg));
+        .sel(MemToReg));
 
     // Program Counter Data Path
     Adder PCI(
@@ -134,7 +141,7 @@ module top();
         .InA(PCI_Out),
         .InB(SL_Out),
         .Out(JA_Out));
-    AND JIMuxAnd(
+    AND JumpAnd(
         .InA(ALU_Zero),
         .InB(Branch),
         .Out(JIMuxControl));
@@ -142,5 +149,6 @@ module top();
         .Out(JIMux_Out),
         .In0(PCI_Out),
         .In1(JA_Out),
-        .Sel(JIMuxControl));
+        .sel(JIMuxControl));
+        
 endmodule
