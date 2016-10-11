@@ -1,0 +1,40 @@
+.text
+main:
+		// Add Tests
+		add 	$s1,	$0,		$0
+		addiu	$s2,	$0,		0xffff
+		addu	$s2,	$s2, 	1
+		addi 	$t1,	$0,		4
+		
+		// Subtract Tests
+		sub		$s3,	$t1,	$0
+		
+		// Multiply Tests
+		mul		
+		multu	$t3,	$s2
+		mult	$0,		$0
+		madd	$t1,	$t1
+		msub	$t1,	$t1
+		
+		// Logical Tests
+		and		$t0, 	$s3,	$s2
+		andi	$t1,	
+		or		$t1,	$s3,		$s2
+		nor		
+		ori		
+		xori	
+		seh		
+		sll		
+		srl		
+		sllv	
+		slt		
+		slti	
+		movn	
+		movz	
+		rotrv	
+		rotr	
+		sra		
+		srav	
+		seb		
+		sltiu	
+		sltu	
