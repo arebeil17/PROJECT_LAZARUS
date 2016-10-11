@@ -49,7 +49,7 @@ module InstructionMemory(Address, Instruction);
     
     initial begin
         Instructions[0] = 32'b00000000000000001000100000100000; // add s1, $zero ,$zero
-		Instructions[1] = 32'b00100010001100100000000000000010; // addi s2, s2, 2
+		Instructions[1] = 32'b00100010010100100000000000000010; // addi s2, s2, 2
 		Instructions[2] = 32'b00000010010000001001100000100010; // sub s3, s2, $zero
 		Instructions[3] = 32'b00000010011100100100000000100100; // and t0, s3, s2
 		Instructions[4] = 32'b00000010011100100100100000100101; // or $t1, $s3, $s2

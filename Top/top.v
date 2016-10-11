@@ -84,11 +84,18 @@ module top(Clk, Rst);
     InstructionMemory IM(
         .Address(PC_Out),
         .Instruction(IM_Out));
-    Mux32Bit2To1 RegDestMux(
-        .Out(RegDst_Out[4:0]),
-        .In0(IM_Out[15:10]),
-        .In1(IM_Out[20:16]),
-        .sel(RegDst));
+//    Mux32Bit2To1 RegDestMux(
+//        .Out(RegDst_Out[4:0]),
+//        .In0(IM_Out[15:11]),
+//        .In1(IM_Out[20:16]),
+//        .sel(RegDst));
+        Mux5bit_2to1 RegDstMux(
+                 .A(IM_Out[15:11]),
+                 .B(IM_Out[20:16]), 
+                 .sel(RegDst), 
+                 .Out(RegDst_Out[4:0]));
+        
+        
     RegisterFile RF(
         .ReadRegister1(IM_Out[25:21]),
         .ReadRegister2(IM_Out[20:16]),
