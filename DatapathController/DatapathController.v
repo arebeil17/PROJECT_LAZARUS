@@ -48,7 +48,7 @@ module DatapathController(Rst, OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite
                  INITIAL: begin
                     RegDst <= 0; RegWrite <= 0; AluSrc <= 0; 
                     MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                    MemToReg <= 0; SignExt <= 0; AluOp <= 'b0000;
+                    MemToReg <= 0; SignExt <= 0; AluOp <= 'b0001;
                  end
                  OP_000000: begin
                      RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 

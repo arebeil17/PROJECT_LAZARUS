@@ -99,8 +99,8 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister,
             registers[WriteRegister] <= WriteData;
         end
     end
-    
-    always @(posedge Clk) begin
+    //Should not be clocked  else will cause intermittent delays on reads
+    always @(ReadRegister1, ReadRegister2) begin
         ReadData1 <= registers[ReadRegister1];
         ReadData2 <= registers[ReadRegister2];
     end
