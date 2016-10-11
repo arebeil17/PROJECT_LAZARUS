@@ -63,7 +63,6 @@ module top(Clk, Rst);
         .Funct(IM_Out[5:0]),
         .ALUControl(ALUControl));
     DatapathController Controller(
-        .Clk(Clk),
         .Rst(Rst),
         .OpCode(IM_Out[31:26]),
         .AluOp(ALUOp),

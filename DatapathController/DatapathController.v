@@ -18,13 +18,13 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-module DatapathController(Clk, Rst, OpCode, RegDist, RegWrite, AluSrc, AluOp, MemWrite, MemRead, Branch, MemToReg, SignExt);
+module DatapathController(Rst, OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, MemRead, Branch, MemToReg, SignExt);
     
-    input Clk, Rst;
+    input Rst;
     
     input[5:0] OpCode;
     
-    output reg RegDist, RegWrite, AluSrc, MemWrite, MemRead, Branch, MemToReg, SignExt;
+    output reg RegDst, RegWrite, AluSrc, MemWrite, MemRead, Branch, MemToReg, SignExt;
     
     output reg [3:0] AluOp;
     
@@ -46,62 +46,62 @@ module DatapathController(Clk, Rst, OpCode, RegDist, RegWrite, AluSrc, AluOp, Me
      always @ (*) begin
         case(State)
                  INITIAL: begin
-                    RegDist <= 0; RegWrite <= 0; AluSrc <= 0; 
+                    RegDst <= 0; RegWrite <= 0; AluSrc <= 0; 
                     MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                     MemToReg <= 0; SignExt <= 0; AluOp <= 'b0000;
                  end
                  OP_000000: begin
-                     RegDist <= 0; RegWrite <= 1; AluSrc <= 0; 
+                     RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
                      MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                      MemToReg <= 0; SignExt <= 1; AluOp <= 'b0000;
                  end
                  OP_011100: begin
-                      RegDist <= 0; RegWrite <= 1; AluSrc <= 0; 
+                      RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
                       MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                       MemToReg <= 0; SignExt <= 1; AluOp <= 'b1100;
                  end
                  OP_011111: begin
-                       RegDist <= 0; RegWrite <= 1; AluSrc <= 1; 
+                       RegDst <= 0; RegWrite <= 1; AluSrc <= 1; 
                        MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                        MemToReg <= 0; SignExt <= 0; AluOp <= 'b0000;
                  end
                  OP_001001: begin
-                       RegDist <= 0; RegWrite <= 1; AluSrc <= 1; 
+                       RegDst <= 0; RegWrite <= 1; AluSrc <= 1; 
                        MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                        MemToReg <= 0; SignExt <= 0; AluOp <= 'b0111;
                 end
                 OP_001000: begin
-                       RegDist <= 0; RegWrite <= 1; AluSrc <= 1; 
+                       RegDst <= 0; RegWrite <= 1; AluSrc <= 1; 
                        MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                        MemToReg <= 0; SignExt <= 1; AluOp <= 'b0001;
                 end
                 OP_001100: begin
-                       RegDist <= 0; RegWrite <= 1; AluSrc <= 1; 
+                       RegDst <= 0; RegWrite <= 1; AluSrc <= 1; 
                        MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                        MemToReg <= 0; SignExt <= 1; AluOp <= 'b0100;
                 end
                 OP_001101: begin
-                       RegDist <= 0; RegWrite <= 1; AluSrc <= 1; 
+                       RegDst <= 0; RegWrite <= 1; AluSrc <= 1; 
                        MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                        MemToReg <= 0; SignExt <= 1; AluOp <= 'b0011;
                 end
                 OP_001110: begin
-                       RegDist <= 0; RegWrite <= 1; AluSrc <= 1; 
+                       RegDst <= 0; RegWrite <= 1; AluSrc <= 1; 
                        MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                        MemToReg <= 0; SignExt <= 1; AluOp <= 'b0101;
                 end
                 OP_001110: begin
-                       RegDist <= 0; RegWrite <= 1; AluSrc <= 1; 
+                       RegDst <= 0; RegWrite <= 1; AluSrc <= 1; 
                        MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                        MemToReg <= 0; SignExt <= 1; AluOp <= 'b0101;
                 end
                 OP_001010: begin
-                       RegDist <= 0; RegWrite <= 1; AluSrc <= 0; 
+                       RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
                        MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                        MemToReg <= 0; SignExt <= 1; AluOp <= 'b1010;
                 end
                 OP_001011: begin
-                       RegDist <= 0; RegWrite <= 1; AluSrc <= 0; 
+                       RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
                        MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                        MemToReg <= 0; SignExt <= 1; AluOp <= 'b1011;
                 end
@@ -110,7 +110,7 @@ module DatapathController(Clk, Rst, OpCode, RegDist, RegWrite, AluSrc, AluOp, Me
         endcase
      end
       //State Register
-     always @(posedge Clk, posedge Rst) begin
+     always @(OpCode , Rst) begin
              if (Rst == 1)
                  State <= INITIAL;
              else

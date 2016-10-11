@@ -30,12 +30,17 @@ module ProgramCounter(Address, PC, Reset, Clk);
 	input Reset, Clk;
 
 	output reg [31:0] PC;
+	reg hold = 0; //Used after reset to stabilze PC
     
     always @(posedge Clk, Reset) begin
         if(Reset == 1)begin
             PC <= 0;
+            hold <= 1;
         end else if(Address > 127)begin
             PC <= 0;
+        end else if(hold) begin
+            PC <= PC;
+            hold <= 0; 
         end else begin
             PC <= Address;
         end

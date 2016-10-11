@@ -94,13 +94,13 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister,
 	   registers[31] = 32'b00000000000000000000000000000000;
 	end
 
-    always @(posedge Clk) begin
+    always @(negedge Clk) begin
         if(RegWrite == 1) begin
             registers[WriteRegister] <= WriteData;
         end
     end
     
-    always @(negedge Clk) begin
+    always @(posedge Clk) begin
         ReadData1 <= registers[ReadRegister1];
         ReadData2 <= registers[ReadRegister2];
     end
