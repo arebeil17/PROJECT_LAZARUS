@@ -18,35 +18,27 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-module HiLoRegister(HiWriteEnable, LoWriteEnable, 
-    HiWriteData, LoWriteData, HiReadData, LoReadData, Clk, Reset);
-    input [31:0] HiWriteData, LoWriteData;
-    output [31:0] HiReadData, LoReadData;
+module HiLoRegister(WriteEnable , WriteData, ReadData, Clk, Reset);
+    input [63:0] WriteData;
+    output [63:0] ReadData;
     
-    input Reset, Clk, HiWriteEnable, LoWriteEnable;
+    input Reset, Clk, WriteEnable;
     
-    reg [31:0] Hi, Lo;
+    reg [63:0] HiLo; 
 
     initial begin
-        Hi <= 32'd0;
-        Lo <= 32'd0;
+        HiLo <= 64'd0;
     end
     
     always @(Reset) begin
-        Hi <= 32'd0;
-        Lo <= 32'd0;
+        HiLo <= 64'd0;
     end
     
     always @(negedge Clk) begin
-        if(HiWriteEnable) begin
-            Hi <= HiWriteData;
-        end
-        if(LoWriteEnable) begin
-            Lo <= LoWriteData;
+        if(WriteEnable) begin
+            HiLo[63:32] <= WriteData;
         end
     end
     
-    assign HiReadData = Hi;
-    assign LoReadData = Lo;
+    assign ReadData = HiLo;
 endmodule

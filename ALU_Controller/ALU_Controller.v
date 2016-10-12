@@ -48,7 +48,7 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      FC_addu =  'b100001,  //addu
                      FC_sub  =  'b100010,  //sub
                      FC_mult =  'b011000,  //mult
-                     FC_multu=  'b010001,  //multu
+                     FC_multu=  'b011001,  //multu
                      FC_and  =  'b100100,  //and
                      FC_or   =  'b100101,  //or
                      FC_nor  =  'b100111,  //nor

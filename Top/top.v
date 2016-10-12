@@ -40,6 +40,9 @@ module top(Clk, Rst);
         MemToReg_Out;   // Output
     wire ALU_Zero;      // Output of ALU Zero Flag
     
+    wire HiLoEn;
+    wire [63:0] HiLoRead, HiLoWrite;
+    
     // Control Signals
     wire RegDst,            // RegDst Mux Control
         ALUSrc,             // ALUSrc Mux Contorl
@@ -121,7 +124,18 @@ module top(Clk, Rst);
         .B(ALUSrc_Out),
         .Shamt(IM_Out[10:6]),
         .ALUResult(ALU_Out),
-        .Zero(ALU_Zero)
+        .Zero(ALU_Zero),
+        .HiLoEn(HiLoEn),
+        .HiLoWrite(HiLoWrite), 
+        .HiLoRead(HiLoRead)
+        );
+    HiLoRegister HiLo(
+        .WriteEnable(HiLoEn) , 
+        .WriteData(HiLoWrite), 
+        .ReadData(HiLoRead), 
+        .Clk(Clk), 
+        .Reset(Rst)
+        );
         //.Move(ALUMove_Out));
     DataMemory DM(
         .Address(ALU_Out),

@@ -52,13 +52,17 @@
 // 
 ////////////////////////////////////////////////////////////////////////////////
 
-module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);//, Move);
+module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiLoRead);//, Move);
 
 	input [4:0] ALUControl; // control bits for ALU operation
 	input [31:0] A, B;	    // inputs
 	input[4:0] Shamt;       //21bit from instruction used for selecting ROTR or SRL
     
-    reg [31:0] Hi = 0, Lo = 0;
+    input [63:0] HiLoRead;
+    output reg HiLoEn;
+    output reg [63:0] HiLoWrite;
+    
+    //reg [31:0] Hi = 0, Lo = 0;
       
 	output reg [31:0] ALUResult;	// answer
 	output Zero;	    // Zero=1 if ALUResult == 0
@@ -93,6 +97,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);//, Move);
     reg [63:0] temp64 = 0;
     
    always @(A, B, ALUControl, Operation) begin
+            HiLoEn <= 0;
             case(Operation)
                 ADD: begin
                     //Move <= 1; // Write Concur
@@ -108,16 +113,16 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);//, Move);
                 end
                 MULT: begin
                 	//Move <= 1; // Write Concur
+                	HiLoEn = 1;
                     temp64 = $signed(A) * $signed(B);
-                    Hi <= temp64[63:32];
-                    Lo <= temp64[31:0];
+                    HiLoWrite <= temp64;
                     ALUResult = 0; //No ALU Result defaults to zero;
                 end
                 MULTU: begin
                     //Move <= 1; // Write Concur
+                    HiLoEn = 1;
                     temp64 = A * B;
-                    Hi <= temp64[63:32];
-                    Lo <= temp64[31:0];
+                    HiLoWrite <= temp64;
                     ALUResult <= 0; //No ALU Result defaults to zero;
                 end
                 AND: begin
@@ -205,16 +210,16 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);//, Move);
                 end
                 MADD: begin
                 	//Move <= 1; // Write Concur
+                	HiLoEn = 1;
                     temp64 = $signed(A) * $signed(B);
-                    Hi <= temp64[63:32] + Hi;
-                    Lo <= temp64[31:0] + Lo;
+                    HiLoWrite <= temp64 + HiLoRead;
                     ALUResult <= 0; //No ALU Result defaults to zero;
                 end
                 MSUB: begin
                 	//Move <= 1; // Write Concur
+                	HiLoEn = 1;
                     temp64 = $signed(A) * $signed(B);
-                    Hi <=  Hi - temp64[63:32];
-                    Lo <= Lo - temp64[31:0];
+                    HiLoWrite <=  HiLoRead - temp64;
                     ALUResult <= 0; //No ALU Result defaults to zero;
                 end
                 SEH_SEB: begin
