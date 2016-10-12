@@ -52,7 +52,7 @@
 // 
 ////////////////////////////////////////////////////////////////////////////////
 
-module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
+module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);//, Move);
 
 	input [4:0] ALUControl; // control bits for ALU operation
 	input [31:0] A, B;	    // inputs
@@ -62,7 +62,8 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
       
 	output reg [31:0] ALUResult;	// answer
 	output Zero;	    // Zero=1 if ALUResult == 0
-    
+    // output Move;		// Move = 1 For All Commands EXCEPT MOV*, MOV* Commands may be 0 or 1 (1 To Write Concur, 0 to Not Write)
+       
     localparam [4:0] ADD  =  'b00000,
                      ADDU  = 'b00001,
                      SUB   = 'b00010,
@@ -94,42 +95,53 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
    always @(A, B, ALUControl, Operation) begin
             case(Operation)
                 ADD: begin
+                    //Move <= 1; // Write Concur
                     ALUResult = $signed(A) + $signed(B);
                 end
                 ADDU: begin
+                    //Move <= 1; // Write Concur
                     ALUResult = A + B;
                 end
                 SUB: begin
+                	//Move <= 1; // Write Concur
                     ALUResult = $signed(A) - $signed(B);
                 end
                 MULT: begin
+                	//Move <= 1; // Write Concur
                     temp64 = $signed(A) * $signed(B);
                     Hi <= temp64[63:32];
                     Lo <= temp64[31:0];
                     ALUResult = 0; //No ALU Result defaults to zero;
                 end
                 MULTU: begin
+                    //Move <= 1; // Write Concur
                     temp64 = A * B;
                     Hi <= temp64[63:32];
                     Lo <= temp64[31:0];
                     ALUResult <= 0; //No ALU Result defaults to zero;
                 end
                 AND: begin
+                	//Move <= 1; // Write Concur
                     ALUResult <= A & B;
                 end
                 OR: begin
+                	//Move <= 1; // Write Concur
                     ALUResult <= A | B;
                 end
                 NOR: begin
+                	//Move <= 1; // Write Concur
                     ALUResult <= ~(A | B);
                 end
                 XOR: begin
+                	//Move <= 1; // Write Concur
                     ALUResult <= A ^ B;
                 end
                 SLL: begin
+                	//Move <= 1; // Write Concur
                     ALUResult <= A << B;
                 end
                 SRL: begin
+                	//Move <= 1; // Write Concur
                     if(A == 0) begin
                         ALUResult <= B >> Shamt;
                     end
@@ -143,21 +155,31 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
                     end
                 end
                 SLLV: begin
+                	//Move <= 1; // Write Concur
                     ALUResult <= A << B;
                 end
                 SLT: begin
+                	//Move <= 1; // Write Concur
                     ALUResult = ($signed(A) < $signed(B)) ? (1):(0); 
                 end
                 MOVN: begin
                     if(B != 0) begin
-                        ALUResult <= A;
-                    end
+                        //Move = 1; // Write Concur
+                        ALUResult = A;
+                    //end else begin
+                    	//Move <= 0; // Write NOT Concur
+                	end
                 end
                 MOVZ: begin
-                    if(B == 0)
+                    if(B == 0) begin
+                        //Move = 1; // Write Concur
                         ALUResult <= A;
+                    //end else begin
+                    	//Move <= 0; // Write NOT Concur
+                    end
                 end
                 ROTRV: begin
+                    //Move <= 1; // Write Concur
                     temp_1 = A >> B;
                     if(B > 0) begin
                         temp_2 = A << (32 - B);
@@ -166,30 +188,37 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
                     ALUResult <= temp_1;
                 end
                 SRA: begin //Shift right arithmetic
+                    //Move <= 1; // Write Concur
                     ALUResult = $signed(A) >>> B;
                 end
                 SRAV: begin
+                	//Move <= 1; // Write Concur
                     ALUResult = $signed(A) >>> B;
                 end
                 SLTU: begin
+                    //Move <= 1; // Write Concur
                     ALUResult = (A < B) ? (1):(0);
                 end
                 MUL: begin
+                	//Move <= 1; // Write Concur
                     ALUResult <= ($signed(A) * $signed(B));
                 end
                 MADD: begin
+                	//Move <= 1; // Write Concur
                     temp64 = $signed(A) * $signed(B);
                     Hi <= temp64[63:32] + Hi;
                     Lo <= temp64[31:0] + Lo;
                     ALUResult <= 0; //No ALU Result defaults to zero;
                 end
                 MSUB: begin
+                	//Move <= 1; // Write Concur
                     temp64 = $signed(A) * $signed(B);
                     Hi <=  Hi - temp64[63:32];
                     Lo <= Lo - temp64[31:0];
                     ALUResult <= 0; //No ALU Result defaults to zero;
                 end
                 SEH_SEB: begin
+                	//Move <= 1; // Write Concur
                     if(B[15] == 1)     //First check half word sign extend required
                         ALUResult = (B | 'hffff0000);
                     else if(B[7] == 1) //Else check if byte sign extend required
@@ -198,6 +227,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
                         ALUResult <= B;
                 end
                 default:
+                	//Move <= 0; // Write NOT Concur
                     ALUResult <= 0;
             endcase
      end
