@@ -15,7 +15,8 @@ module ALU32Bit_tb();
 
 	wire [31:0] ALUResult;	// answer
 	wire Zero;	        // Zero=1 if ALUResult == 0
-
+	//wire Move;
+	
     ALU32Bit u0(
         .ALUControl(ALUControl), 
         .A(A), 
@@ -23,6 +24,7 @@ module ALU32Bit_tb();
         .Shamt(Shamt), 
         .ALUResult(ALUResult), 
         .Zero(Zero)
+        //.Move(Move)
     );
     
     localparam [4:0] ADD  =  'b00000,
