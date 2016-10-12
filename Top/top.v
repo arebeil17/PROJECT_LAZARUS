@@ -24,9 +24,9 @@ module top(Clk, Rst);
 
     input Clk, Rst;
     // Data Signals
-    wire [31:0] IM_Out,         // Ouput of IM
-        SL_Out,
-        JIMux_Out,
+    wire [31:0] IM_Out, // Ouput of IM
+        SL_Out,         // Output of Shift Left
+        JIMux_Out,      // Output of Jump/Increment Mux
         RF_RD1,         // Ouptut #1 of RF
         RF_RD2,         // Output #2 of RF
         RegDst_Out,     // Output of RegDstMux
@@ -38,7 +38,6 @@ module top(Clk, Rst);
         PCI_Out,        // Output of PCI (PC Incrementer)
         JA_Out,         // Output of JA (Jump Adder)
         MemToReg_Out;   // Output
-        
     wire ALU_Zero;      // Output of ALU Zero Flag
     
     // Control Signals
@@ -89,13 +88,11 @@ module top(Clk, Rst);
 //        .In0(IM_Out[15:11]),
 //        .In1(IM_Out[20:16]),
 //        .sel(RegDst));
-        Mux5bit_2to1 RegDstMux(
-                 .A(IM_Out[15:11]),
-                 .B(IM_Out[20:16]), 
-                 .sel(RegDst), 
-                 .Out(RegDst_Out[4:0]));
-        
-        
+    Mux5bit_2to1 RegDstMux(
+        .A(IM_Out[15:11]),
+        .B(IM_Out[20:16]), 
+        .sel(RegDst), 
+        .Out(RegDst_Out[4:0]));
     RegisterFile RF(
         .ReadRegister1(IM_Out[25:21]),
         .ReadRegister2(IM_Out[20:16]),
