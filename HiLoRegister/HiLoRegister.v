@@ -35,9 +35,7 @@ module HiLoRegister(WriteEnable , WriteData, ReadData, Clk, Reset);
     end
     
     always @(negedge Clk) begin
-        if(WriteEnable) begin
-            HiLo[63:32] <= WriteData;
-        end
+        if(WriteEnable)HiLo <= WriteData;
     end
     
     assign ReadData = HiLo;
