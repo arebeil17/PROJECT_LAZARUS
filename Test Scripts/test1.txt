@@ -21,18 +21,18 @@ main:
 		andi	$t4,	$s2,	0x00ff	// t4 = 0x00ff
 		or		$t5,	$s2,	$s3		// t5 = 0x1
 		nor		$t6,	$s2,	$s3		// t6 = 0xfffe
-		ori		$t7,	$s2,	0x0ff0	// t7 = 0x0ff0
-		xori	$t8,	$s2,	0x0ff0	// t8 = 0xf00f
+		ori		$t7,	$s2,	0x0ff0	// t7 = 0xffff
+		xori	$t8,	$s2,	0xf00f	// t8 = 0x0ff0
 		seh		$t9,	$t4				// t9 = 0xffff
-		sll		$v0,	$t7,	1		// v0 = 0xff00
-		srl		$v1,	$t7,	1		// v1 = 0x00ff
-		sllv	$s1,	$t7,	$s1		// s1 = 0x0ff0
+		sll		$v0,	$t8,	1		// v0 = 0x1fe0
+		srl		$v1,	$t8,	1		// v1 = 0x07f8
+		sllv	$s1,	$t8,	$s1		// s1 = 0x0ff0
 		slt		$s2,	$v1,	$v0		// s2 = 0
 		slti	$s3,	$t8,	0		// s3 = 1
 		movn	$s4,	$s3,	$s2		// s4 = 
-		movz	$s5,	
-		rotrv	$s6,	
-		rotr	$s7,	
+		movz	$s5,	$s3,	$s2		// s5 = 
+		rotrv	$s6,	$v0,	$s3		// s6 = 0x7f80
+		rotr	$s7,	$v0,	4		// s7 = 0x
 		sra		$t0,	
 		srav	$t1,	
 		seb		$t2,	
