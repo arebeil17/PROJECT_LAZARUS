@@ -2,7 +2,7 @@
 main:
 		# Add Tests
 		add 	$s1,	$0,		$0		# s1 = 0x0
-		addiu	$s2,	$0,		0xffff	# s2 = 0xffff
+		addiu	$s2,	$0,		65535	# s2 = 0xffff
 		addu	$s3,	$s2, 	2		# s3 = 0x1
 		addi 	$s4,	$0,		4		# s4 = 4
 		
@@ -18,11 +18,11 @@ main:
 		
 		# Logical Tests
 		and		$t3, 	$s2,	$s2		# t3 = 0xffff
-		andi	$t4,	$s2,	0x00ff	# t4 = 0x00ff
+		andi	$t4,	$s2,	255		# t4 = 0x00ff
 		or		$t5,	$s2,	$s3		# t5 = 0x1
 		nor		$t6,	$s2,	$s3		# t6 = 0xfffe
-		ori		$t7,	$s2,	0x0ff0	# t7 = 0xffff
-		xori	$t8,	$s2,	0xf00f	# t8 = 0x0ff0
+		ori		$t7,	$s2,	4080	# t7 = 0xffff
+		xori	$t8,	$s2,	61455	# t8 = 0x0ff0
 		seh		$t9,	$t3				# t9 = 0xffffffff
 		sll		$v0,	$t8,	1		# v0 = 0x1fe0
 		srl		$v1,	$t8,	1		# v1 = 0x07f8
