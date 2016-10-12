@@ -93,13 +93,18 @@ module top(Clk, Rst);
         .B(IM_Out[20:16]), 
         .sel(RegDst), 
         .Out(RegDst_Out[4:0]));
-    RegisterFile RF(
+	//AND RF_AND(
+	//	.InA(RegWrite),
+	//	.InB(ALUMoveOut),
+	//	.Out(RF_AND_Out));
+	RegisterFile RF(
         .ReadRegister1(IM_Out[25:21]),
         .ReadRegister2(IM_Out[20:16]),
         .WriteRegister(RegDst_Out[4:0]),
         .WriteData(MemToReg_Out),
         .RegWrite(RegWrite),
-        .Clk(Clk),
+        //.RegWrite(RF_AND_Out),
+		.Clk(Clk),
         .ReadData1(RF_RD1),
         .ReadData2(RF_RD2));
     SignExtension SE(
@@ -117,7 +122,7 @@ module top(Clk, Rst);
         .Shamt(IM_Out[10:6]),
         .ALUResult(ALU_Out),
         .Zero(ALU_Zero)
-        );
+        //.Move(ALUMove_Out));
     DataMemory DM(
         .Address(ALU_Out),
         .WriteData(RF_RD2),
