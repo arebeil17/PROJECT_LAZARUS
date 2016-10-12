@@ -78,7 +78,7 @@ module InstructionMemory(Address, Instruction);
 		Instructions[27] = 32'b00000010011010110100100000000111;
 		Instructions[28] = 32'b01111100000011000101010000100000;
 		Instructions[29] = 32'b00101111000010110000000000000000;
-		Instructions[29] = 32'b00000000011000100110000000101011;
+		Instructions[30] = 32'b00000000011000100110000000101011;
     end
 
     assign Instruction = Instructions[Address[31:2]];
