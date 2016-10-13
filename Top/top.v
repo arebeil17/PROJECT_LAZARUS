@@ -65,19 +65,19 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     
     Two4DigitDisplay Display(
         .Clk(Clk), 
-        .NumberA(RF_RD1[7:0]), 
+        .NumberA(ALU_Out), 
         .NumberB(PCI_Out), 
         .out7(out7), 
         .en_out(en_out));
         
-    ProgramCounter ALUOutVal(
-        .Address(ALU_Out),
-        .PC(Display_Out),
-        .Reset(Rst),
-        .Clk(ClkOut));
+//    ProgramCounter ALUOutVal(
+//        .Address(ALU_Out),
+//        .PC(Display_Out),
+//        .Reset(Rst),
+//        .Clk(ClkOut));
     
     Mod_Clk_Div MCD(
-        .In('d0), 
+        .In(4'b1111), 
         .Clk(Clk), 
         .Rst(Rst), 
         .ClkOut(ClkOut));

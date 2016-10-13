@@ -38,7 +38,7 @@ module Mod_Clk_Div(In, Clk, Rst, ClkOut);
     reg [28:0] DivSel = DivVal_0; //Stores desired clock frequency constant
     reg [28:0] TempSel = DivVal_0; //Temporarily stores constant for divSel
     
-    always @(posedge Clk) begin
+    always @(posedge Clk, posedge Rst) begin
         if( (Rst == 1) || (Next_L) )begin
                DivCnt <= 0;
                ClkOut <= 0;
@@ -114,12 +114,12 @@ module Mod_Clk_Div(In, Clk, Rst, ClkOut);
 //       else if(4'b1101==In) begin
 //            TempSel <= DivVal_13;  
 //       end
-       else if(4'b1010 <= In) begin
+       else if(4'b1010 == In) begin
             TempSel <= DivVal_14; 
             //TempSel <= DivVal_Test2; 
        end                                                                                                                     
        else if(4'b1111==In) begin
-            TempSel <= DivVal_Test1;
+            TempSel <= DivVal_Test2;
        end
     end
  
