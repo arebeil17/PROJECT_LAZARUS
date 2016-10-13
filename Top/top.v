@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module top(Clk, Rst);
+module top(Clk, Rst, out7, en_out, ClkOut);
 
     input Clk, Rst;
     // Data Signals
@@ -37,7 +37,8 @@ module top(Clk, Rst);
         DM_Out,         // Output of DM
         PCI_Out,        // Output of PCI (PC Incrementer)
         JA_Out,         // Output of JA (Jump Adder)
-        MemToReg_Out;   // Output
+        MemToReg_Out,   // Output
+        Display_Out;
     wire ALU_Zero;      // Output of ALU Zero Flag
     
     wire HiLoEn;
@@ -57,6 +58,29 @@ module top(Clk, Rst);
     wire [4:0] ALUControl;  // ALU Controller to ALU Data
     wire [3:0] ALUOp;       // Controller to ALU Controller Data
     
+    output wire ClkOut;
+    
+    output [6:0] out7; //seg a, b, ... g
+    output [7:0] en_out;
+    
+    Two4DigitDisplay Display(
+        .Clk(Clk), 
+        .NumberA(RF_RD1[7:0]), 
+        .NumberB(PCI_Out), 
+        .out7(out7), 
+        .en_out(en_out));
+        
+    ProgramCounter ALUOutVal(
+        .Address(ALU_Out),
+        .PC(Display_Out),
+        .Reset(Rst),
+        .Clk(ClkOut));
+    
+    Mod_Clk_Div MCD(
+        .In('d0), 
+        .Clk(Clk), 
+        .Rst(Rst), 
+        .ClkOut(ClkOut));
     
     // Controller(s)
     ALU_Controller ALUController(
@@ -82,7 +106,7 @@ module top(Clk, Rst);
         .Address(JIMux_Out),
         .PC(PC_Out),
         .Reset(Rst),
-        .Clk(Clk));
+        .Clk(ClkOut));
     InstructionMemory IM(
         .Address(PC_Out),
         .Instruction(IM_Out));
@@ -107,7 +131,7 @@ module top(Clk, Rst);
         .WriteData(MemToReg_Out),
         .RegWrite(RegWrite),
         //.RegWrite(RF_AND_Out),
-		.Clk(Clk),
+		.Clk(ClkOut),
         .ReadData1(RF_RD1),
         .ReadData2(RF_RD2));
     SignExtension SE(
@@ -133,14 +157,14 @@ module top(Clk, Rst);
         .WriteEnable(HiLoEn) , 
         .WriteData(HiLoWrite), 
         .ReadData(HiLoRead), 
-        .Clk(Clk), 
+        .Clk(ClkOut), 
         .Reset(Rst)
         );
         //.Move(ALUMove_Out));
     DataMemory DM(
         .Address(ALU_Out),
         .WriteData(RF_RD2),
-        .Clk(Clk),
+        .Clk(ClkOut),
         .MemWrite(MemWrite),
         .MemRead(MemRead),
         .ReadData(DM_Out));

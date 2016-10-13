@@ -45,8 +45,6 @@ module InstructionMemory(Address, Instruction);
 	// Modify the size of the Instructions Array to Be The Total Lines of Code
     reg [31:0] memory [28:0];
     
-    integer unsigned x;
-    
     initial begin
         memory[0] = 32'b00100000000010000000000000000010;
 		memory[1] = 32'b00100000000010010000000000000011;

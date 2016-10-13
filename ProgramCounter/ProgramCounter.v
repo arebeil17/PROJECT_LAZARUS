@@ -36,7 +36,7 @@ module ProgramCounter(Address, PC, Reset, Clk);
         if(Reset == 1)begin
             PC <= 0;
             hold <= 1;
-        end else if(Address > 127)begin
+        end else if(Address > 40)begin
             PC <= 0;
         end else if(hold) begin
             PC <= PC;
