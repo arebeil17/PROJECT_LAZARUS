@@ -70,11 +70,11 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .out7(out7), 
         .en_out(en_out));
         
-//    ProgramCounter ALUOutVal(
-//        .Address(ALU_Out),
-//        .PC(Display_Out),
-//        .Reset(Rst),
-//        .Clk(ClkOut));
+    ProgramCounter ALUOutVal(
+        .Address(ALU_Out),
+        .PC(Display_Out),
+        .Reset(Rst),
+        .Clk(ClkOut));
     
     Mod_Clk_Div MCD(
         .In(4'b1111), 
@@ -88,8 +88,9 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .AluOp(ALUOp),
         .Funct(IM_Out[5:0]),
         .ALUControl(ALUControl));
+        
     DatapathController Controller(
-        .Rst(Rst),
+        //.Rst(Rst),
         .OpCode(IM_Out[31:26]),
         .AluOp(ALUOp),
         .RegDst(RegDst),
@@ -107,9 +108,11 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .PC(PC_Out),
         .Reset(Rst),
         .Clk(ClkOut));
+        
     InstructionMemory IM(
         .Address(PC_Out),
-        .Instruction(IM_Out));
+        .Instruction(IM_Out)
+        );
 //    Mux32Bit2To1 RegDestMux(
 //        .Out(RegDst_Out[4:0]),
 //        .In0(IM_Out[15:11]),
@@ -119,7 +122,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .A(IM_Out[15:11]),
         .B(IM_Out[20:16]), 
         .sel(RegDst), 
-        .Out(RegDst_Out[4:0]));
+        .Out(RegDst_Out[4:0])
+        );
 	//AND RF_AND(
 	//	.InA(RegWrite),
 	//	.InB(ALUMoveOut),

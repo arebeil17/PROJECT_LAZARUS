@@ -29,7 +29,8 @@ module ProgramCounter(Address, PC, Reset, Clk);
 	input [31:0] Address;
 	input Reset, Clk;
 
-	output reg [31:0] PC;
+	output reg [31:0] PC = 0;
+	
 	reg hold = 0; //Used after reset to stabilze PC
     
     always @(posedge Clk, posedge Reset) begin

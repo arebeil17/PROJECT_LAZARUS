@@ -33,7 +33,7 @@ module Processor_TB();
     
     initial begin
         //Rst <= 1;
-        #10 Rst <= 1;
+        #100 Rst <= 1;
         #10 Rst <= 0;
     end
     

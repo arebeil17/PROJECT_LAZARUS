@@ -12,7 +12,7 @@ module Mod_Clk_Div(In, Clk, Rst, ClkOut);
     input Clk, Rst;
     input [3:0] In;
     
-    output reg ClkOut;
+    output reg ClkOut = 0;
     
     reg Next_L = 0; //tracks level change/update
     
@@ -38,7 +38,7 @@ module Mod_Clk_Div(In, Clk, Rst, ClkOut);
     reg [28:0] DivSel = DivVal_0; //Stores desired clock frequency constant
     reg [28:0] TempSel = DivVal_0; //Temporarily stores constant for divSel
     
-    always @(posedge Clk, posedge Rst) begin
+    always @(posedge Clk) begin
         if( (Rst == 1) || (Next_L) )begin
                DivCnt <= 0;
                ClkOut <= 0;

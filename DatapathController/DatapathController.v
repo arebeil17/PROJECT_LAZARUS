@@ -18,9 +18,9 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-module DatapathController(Rst, OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, MemRead, Branch, MemToReg, SignExt);
+module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, MemRead, Branch, MemToReg, SignExt);
     
-    input Rst;
+    //input Rst;
     
     input[5:0] OpCode;
     
@@ -110,11 +110,13 @@ module DatapathController(Rst, OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite
         endcase
      end
       //State Register
-     always @(OpCode , Rst) begin
-             if (Rst == 1)
-                 State <= INITIAL;
-             else
-                 State <= OpCode;
-     end               
-    
+     always @(OpCode) begin
+//        if(Rst == 1) begin
+//            State <= INITIAL;
+//        end    
+//        else begin
+            State <= OpCode;
+//        end
+     end
+                 
 endmodule
