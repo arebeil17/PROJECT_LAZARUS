@@ -38,6 +38,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         PCI_Out,        // Output of PCI (PC Incrementer)
         JA_Out,         // Output of JA (Jump Adder)
         MemToReg_Out;   // Output
+           
     wire ALU_Zero;      // Output of ALU Zero Flag
     
     wire HiLoEn;
@@ -65,7 +66,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     // Output 8 x Seven Segment
     Two4DigitDisplay Display(
         .Clk(Clk), 
-        .NumberA(ALU_Out), 
+        .NumberA(ALU_Out[7:0]), 
         .NumberB(PCI_Out), 
         .out7(out7), 
         .en_out(en_out));

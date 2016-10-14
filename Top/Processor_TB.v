@@ -26,15 +26,15 @@ module Processor_TB();
     
     always begin
         Clk <= 0;
-        #10; 
+        #5; 
         Clk <= 1;
-        #10;
+        #5;
     end
     
     initial begin
         //Rst <= 1;
-        #100 Rst <= 1;
-        #10 Rst <= 0;
+        #20 Rst <= 1;
+        #20 Rst <= 0;
     end
     
 endmodule
