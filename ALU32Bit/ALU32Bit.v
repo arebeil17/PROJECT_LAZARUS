@@ -96,156 +96,152 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
     reg [31:0] temp_1 = 0, temp_2 = 0;
     reg [63:0] temp64 = 0;
     
-   always @(A, B, ALUControl, Operation) begin
-            HiLoEn = 0;
-            case(Operation)
-                ADD: begin
-                    //Move <= 1; // Write Concur
-                    ALUResult = $signed(A) + $signed(B);
-                end
-                ADDU: begin
-                    //Move <= 1; // Write Concur
-                    ALUResult = A + B;
-                end
-                SUB: begin
-                	//Move <= 1; // Write Concur
-                    ALUResult = $signed(A) - $signed(B);
-                end
-                MULT: begin
-                	//Move <= 1; // Write Concur
-                	HiLoEn = 1;
-                    temp64 = $signed(A) * $signed(B);
-                    HiLoWrite <= temp64;
-                    ALUResult = 0; //No ALU Result defaults to zero;
-                    //HiLoEn = 0;
-                end
-                MULTU: begin
-                    //Move <= 1; // Write Concur
-                    HiLoEn = 1;
-                    temp64 = A * B;
-                    HiLoWrite <= temp64;
-                    ALUResult <= 0; //No ALU Result defaults to zero;
-                    //HiLoEn = 0;
-                end
-                AND: begin
-                	//Move <= 1; // Write Concur
-                    ALUResult <= A & B;
-                end
-                OR: begin
-                	//Move <= 1; // Write Concur
-                    ALUResult <= A | B;
-                end
-                NOR: begin
-                	//Move <= 1; // Write Concur
-                    ALUResult <= ~(A | B);
-                end
-                XOR: begin
-                	//Move <= 1; // Write Concur
-                    ALUResult <= A ^ B;
-                end
-                SLL: begin
-                	//Move <= 1; // Write Concur
-                    ALUResult <= A << B;
-                end
-                SRL: begin
-                	//Move <= 1; // Write Concur
-                    if(A == 0) begin
-                        ALUResult <= B >> Shamt;
-                    end
-                    else begin
-                        temp_1 = B >> Shamt;
-                        if(Shamt > 0) begin
-                            temp_2 = B << (32 - Shamt);
-                            temp_1 = temp_1 | temp_2;
-                        end
-                        ALUResult <= temp_1;
-                    end
-                end
-                SLLV: begin
-                	//Move <= 1; // Write Concur
-                    ALUResult <= A << B;
-                end
-                SLT: begin
-                	//Move <= 1; // Write Concur
-                    ALUResult = ($signed(A) < $signed(B)) ? (1):(0); 
-                end
-                MOVN: begin
-                    if(B != 0) begin
-                        //Move = 1; // Write Concur
-                        ALUResult = A;
-                    //end else begin
-                    	//Move <= 0; // Write NOT Concur
-                	end
-                end
-                MOVZ: begin
-                    if(B == 0) begin
-                        //Move = 1; // Write Concur
-                        ALUResult <= A;
-                    //end else begin
-                    	//Move <= 0; // Write NOT Concur
-                    end
-                end
-                ROTRV: begin
-                    //Move <= 1; // Write Concur
-                    temp_1 = A >> B;
-                    if(B > 0) begin
-                        temp_2 = A << (32 - B);
+    always @(A, B, ALUControl, Operation) begin
+        HiLoEn = 0;
+        case(Operation)
+            ADD: begin
+                //Move <= 1; // Write Concur
+                ALUResult = $signed(A) + $signed(B);
+            end
+            ADDU: begin
+                //Move <= 1; // Write Concur
+                ALUResult = A + B;
+            end
+            SUB: begin
+            	//Move <= 1; // Write Concur
+                ALUResult = $signed(A) - $signed(B);
+            end
+            MULT: begin
+            	//Move <= 1; // Write Concur
+            	HiLoEn = 1;
+                temp64 = $signed(A) * $signed(B);
+                HiLoWrite <= temp64;
+                ALUResult = 0; //No ALU Result defaults to zero;
+            end
+            MULTU: begin
+                //Move <= 1; // Write Concur
+                HiLoEn = 1;
+                temp64 = A * B;
+                HiLoWrite <= temp64;
+                ALUResult <= 0; //No ALU Result defaults to zero;
+            end
+            AND: begin
+            	//Move <= 1; // Write Concur
+                ALUResult <= A & B;
+            end
+            OR: begin
+            	//Move <= 1; // Write Concur
+                ALUResult <= A | B;
+            end
+            NOR: begin
+            	//Move <= 1; // Write Concur
+                ALUResult <= ~(A | B);
+            end
+            XOR: begin
+            	//Move <= 1; // Write Concur
+                ALUResult <= A ^ B;
+            end
+            SLL: begin
+            	//Move <= 1; // Write Concur
+                ALUResult <= A << B;
+            end
+            SRL: begin
+            	//Move <= 1; // Write Concur
+                if(A == 0) begin
+                    ALUResult <= B >> Shamt;
+                end else begin
+                    temp_1 = B >> Shamt;
+                    if(Shamt > 0) begin
+                        temp_2 = B << (32 - Shamt);
                         temp_1 = temp_1 | temp_2;
                     end
                     ALUResult <= temp_1;
                 end
-                SRA: begin //Shift right arithmetic
-                    //Move <= 1; // Write Concur
-                    ALUResult = $signed(A) >>> B;
-                end
-                SRAV: begin
-                	//Move <= 1; // Write Concur
-                    ALUResult = $signed(A) >>> B;
-                end
-                SLTU: begin
-                    //Move <= 1; // Write Concur
-                    ALUResult = (A < B) ? (1):(0);
-                end
-                MUL: begin
-                	//Move <= 1; // Write Concur
-                    ALUResult <= ($signed(A) * $signed(B));
-                end
-                MADD: begin
-                	//Move <= 1; // Write Concur
-                	HiLoEn = 1;
-                    temp64 = $signed(A) * $signed(B);
-                    HiLoWrite <= temp64 + HiLoRead;
-                    ALUResult <= 0; //No ALU Result defaults to zero;
-                    //HiLoEn = 0;
-                end
-                MSUB: begin
-                	//Move <= 1; // Write Concur
-                	HiLoEn = 1;
-                    temp64 = $signed(A) * $signed(B);
-                    HiLoWrite <=  HiLoRead - temp64;
-                    ALUResult <= 0; //No ALU Result defaults to zero;
-                    //HiLoEn = 0;
-                end
-                SEH_SEB: begin
-                	//Move <= 1; // Write Concur
-                    if(B[15] == 1)     //First check half word sign extend required
-                        ALUResult = (B | 'hffff0000);
-                    else if(B[7] == 1) //Else check if byte sign extend required
-                        ALUResult = (B | 'hffffff00);
-                    else               //Else no sign extend required
-                        ALUResult <= B;
-                end
-                default:
+            end
+            SLLV: begin
+            	//Move <= 1; // Write Concur
+                ALUResult <= A << B;
+            end
+            SLT: begin
+            	//Move <= 1; // Write Concur
+                ALUResult = ($signed(A) < $signed(B)) ? (1):(0); 
+            end
+            MOVN: begin
+                if(B != 0) begin
+                    //Move = 1; // Write Concur
+                    ALUResult = A;
+                //end else begin
                 	//Move <= 0; // Write NOT Concur
-                    ALUResult <= 0;
-            endcase
-     end
+            	end
+            end
+            MOVZ: begin
+                if(B == 0) begin
+                    //Move = 1; // Write Concur
+                    ALUResult <= A;
+                //end else begin
+                	//Move <= 0; // Write NOT Concur
+                end
+            end
+            ROTRV: begin
+                //Move <= 1; // Write Concur
+                temp_1 = A >> B;
+                if(B > 0) begin
+                    temp_2 = A << (32 - B);
+                    temp_1 = temp_1 | temp_2;
+                end
+                ALUResult <= temp_1;
+            end
+            SRA: begin //Shift right arithmetic
+                //Move <= 1; // Write Concur
+                ALUResult = $signed(A) >>> B;
+            end
+            SRAV: begin
+            	//Move <= 1; // Write Concur
+                ALUResult = $signed(A) >>> B;
+            end
+            SLTU: begin
+                //Move <= 1; // Write Concur
+                ALUResult = (A < B) ? (1):(0);
+            end
+            MUL: begin
+            	//Move <= 1; // Write Concur
+                ALUResult <= ($signed(A) * $signed(B));
+            end
+            MADD: begin
+            	//Move <= 1; // Write Concur
+            	HiLoEn = 1;
+                temp64 = $signed(A) * $signed(B);
+                HiLoWrite <= temp64 + HiLoRead;
+                ALUResult <= 0; //No ALU Result defaults to zero;
+                //HiLoEn = 0;
+            end
+            MSUB: begin
+            	//Move <= 1; // Write Concur
+            	HiLoEn = 1;
+                temp64 = $signed(A) * $signed(B);
+                HiLoWrite <=  HiLoRead - temp64;
+                ALUResult <= 0; //No ALU Result defaults to zero;
+                //HiLoEn = 0;
+            end
+            SEH_SEB: begin
+            	//Move <= 1; // Write Concur
+                if(B[15] == 1)     //First check half word sign extend required
+                    ALUResult = (B | 'hffff0000);
+                else if(B[7] == 1) //Else check if byte sign extend required
+                    ALUResult = (B | 'hffffff00);
+                else               //Else no sign extend required
+                    ALUResult <= B;
+            end
+            default:
+            	//Move <= 0; // Write NOT Concur
+                ALUResult <= 0;
+        endcase
+    end
     
     assign Zero = (ALUResult == 0) ? (1):(0);
     
     always @(ALUControl, A, B, Shamt)begin
         Operation <= ALUControl;
     end
-
 endmodule
 
