@@ -26,7 +26,7 @@ module HiLoRegister_tb();
     
     wire [31:0] HiReadData, LoReadData;
     
-    HiLoRegisters HiLo(.HiWriteEnable(HiWriteEnable), .LoWriteEnable(LoWriteEnable), 
+    HiLoRegister HiLo(.HiWriteEnable(HiWriteEnable), .LoWriteEnable(LoWriteEnable), 
         .HiWriteData(HiWriteData), .LoWriteData(LoWriteData),
         .HiReadData(HiReadData), .LoReadData(LoReadData), .Clk(Clk), .Reset(RST));
         
