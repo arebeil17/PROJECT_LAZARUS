@@ -37,8 +37,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         DM_Out,         // Output of DM
         PCI_Out,        // Output of PCI (PC Incrementer)
         JA_Out,         // Output of JA (Jump Adder)
-        MemToReg_Out,   // Output
-        Display_Out;
+        MemToReg_Out;   // Output
     wire ALU_Zero;      // Output of ALU Zero Flag
     
     wire HiLoEn;
@@ -63,19 +62,15 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     output [6:0] out7; //seg a, b, ... g
     output [7:0] en_out;
     
+    // Output 8 x Seven Segment
     Two4DigitDisplay Display(
         .Clk(Clk), 
         .NumberA(ALU_Out), 
         .NumberB(PCI_Out), 
         .out7(out7), 
         .en_out(en_out));
-        
-    ProgramCounter ALUOutVal(
-        .Address(ALU_Out),
-        .PC(Display_Out),
-        .Reset(Rst),
-        .Clk(ClkOut));
     
+    // Clock Divider
     Mod_Clk_Div MCD(
         .In(4'b1111), 
         .Clk(Clk), 
@@ -113,11 +108,6 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .Address(PC_Out),
         .Instruction(IM_Out)
         );
-//    Mux32Bit2To1 RegDestMux(
-//        .Out(RegDst_Out[4:0]),
-//        .In0(IM_Out[15:11]),
-//        .In1(IM_Out[20:16]),
-//        .sel(RegDst));
     Mux5bit_2to1 RegDstMux(
         .A(IM_Out[15:11]),
         .B(IM_Out[20:16]), 
