@@ -141,10 +141,6 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                 FC_sltu: begin  //sltu
                     ALUControl <= SLTU;
                 end
-// SEB & SEH Can Not Be Alu_Op = DC, the function code overlaps with ADD
-//                FC_seh_seb: begin  //seh
-//                    ALUControl <= SEH_SEB;
-//                end
                 default: begin
                     ALUControl <= ADD;
                 end

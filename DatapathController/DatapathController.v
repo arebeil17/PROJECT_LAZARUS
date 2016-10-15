@@ -23,7 +23,7 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
     input[5:0] OpCode;
     
     output reg RegDst, RegWrite, AluSrc, MemWrite, MemRead, Branch, MemToReg, SignExt;
-    
+  
     output reg [3:0] AluOp;
     
     localparam [5:0] INITIAL = 'b111111,    //INITIAL
@@ -38,15 +38,15 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                      OP_001010 = 'b001010,  //slti
                      OP_001011 = 'b001011;  //sltui
      
-     reg [5:0] State = INITIAL;
+    reg [5:0] State = INITIAL;
      
-     //always @(change of any input)begin
-     always @ (*) begin
+    //always @(change of any input)begin
+    always @ (*) begin
         case(State)
             INITIAL: begin
                 RegDst <= 0; RegWrite <= 0; AluSrc <= 0; 
-                   MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                   MemToReg <= 0; SignExt <= 0; AluOp <= 'b0001;
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 0; AluOp <= 'b0001;
             end
             OP_000000: begin
                 RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
@@ -59,7 +59,6 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 MemToReg <= 0; SignExt <= 1; AluOp <= 'b1100;
             end
             OP_011111: begin
-                //RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
                 RegDst <= 1; RegWrite <= 1; AluSrc <= 0; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 0; SignExt <= 0; AluOp <= 'b1101;
