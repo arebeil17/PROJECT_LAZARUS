@@ -93,7 +93,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
     reg [31:0] temp_1 = 0, temp_2 = 0;
     reg [63:0] temp64 = 0;
     
-    always @(A, B, ALUControl, Operation) begin
+    always @(A, B, ALUControl, Operation, Shamt) begin
         HiLoEn = 0;
         case(Operation)
             ADD: begin
@@ -220,12 +220,18 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
             end
             SEH_SEB: begin
             	RegWrite <= 1; // Write Concur
-                if(B[15] == 1)     //First check half word sign extend required
+                if(Shamt == 'b11000) begin
+                    ALUResult = {{24{B[7]}},B[7:0]};
+                end else if(Shamt == 'b10000) begin
+                    ALUResult = {{16{B[15]}},B[15:0]};
+                end
+/*                if(B[15] == 1)     //First check half word sign extend required
                     ALUResult = (B | 'hffff0000);
                 else if(B[7] == 1) //Else check if byte sign extend required
                     ALUResult = (B | 'hffffff00);
-                else               //Else no sign extend required
+                else begin         //Else no sign extend required
                     ALUResult <= B;
+                end*/
             end
             default: begin
             	RegWrite <= 0; // Write NOT Concur
