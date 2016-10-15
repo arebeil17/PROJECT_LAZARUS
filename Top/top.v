@@ -37,8 +37,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         DM_Out,         // Output of DM
         PCI_Out,        // Output of PCI (PC Incrementer)
         JA_Out,         // Output of JA (Jump Adder)
-        MemToReg_Out;   // Output
-           
+        MemToReg_Out,   // Output
+        RFAND_Out;      // Output of the RFAND
     wire ALU_Zero;      // Output of ALU Zero Flag
     
     wire HiLoEn;
@@ -66,14 +66,15 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     // Output 8 x Seven Segment
     Two4DigitDisplay Display(
         .Clk(Clk), 
-        .NumberA(ALU_Out[7:0]), 
+        .NumberA(ALU_Out), 
         .NumberB(PCI_Out), 
         .out7(out7), 
         .en_out(en_out));
     
     // Clock Divider
     Mod_Clk_Div MCD(
-        .In(4'b1111), 
+        .In(4'b1111), // For Testing
+        //.In(4'b0000), // For Use 
         .Clk(Clk), 
         .Rst(Rst), 
         .ClkOut(ClkOut));
@@ -99,7 +100,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .SignExt(SignExt));
     
     // Data Path Components
-    ProgramCounter PC(
+    Register PC(
         .Address(JIMux_Out),
         .PC(PC_Out),
         .Reset(Rst),
@@ -115,17 +116,17 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .sel(RegDst), 
         .Out(RegDst_Out[4:0])
         );
-	//AND RF_AND(
-	//	.InA(RegWrite),
-	//	.InB(ALUMoveOut),
-	//	.Out(RF_AND_Out));
+	AND RF_AND(
+		.InA(RegWrite),
+		.InB(ALU_RegWrite),
+		.Out(RFAND_Out));
 	RegisterFile RF(
         .ReadRegister1(IM_Out[25:21]),
         .ReadRegister2(IM_Out[20:16]),
         .WriteRegister(RegDst_Out[4:0]),
         .WriteData(MemToReg_Out),
-        .RegWrite(RegWrite),
-        //.RegWrite(RF_AND_Out),
+        //.RegWrite(RegWrite),
+        .RegWrite(RFAND_Out),
 		.Clk(ClkOut),
         .ReadData1(RF_RD1),
         .ReadData2(RF_RD2));
@@ -146,16 +147,14 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .Zero(ALU_Zero),
         .HiLoEn(HiLoEn),
         .HiLoWrite(HiLoWrite), 
-        .HiLoRead(HiLoRead)
-        );
+        .HiLoRead(HiLoRead),
+        .RegWrite(ALU_RegWrite));
     HiLoRegister HiLo(
         .WriteEnable(HiLoEn) , 
         .WriteData(HiLoWrite), 
         .ReadData(HiLoRead), 
         .Clk(ClkOut), 
-        .Reset(Rst)
-        );
-        //.Move(ALUMove_Out));
+        .Reset(Rst));
     DataMemory DM(
         .Address(ALU_Out),
         .WriteData(RF_RD2),
