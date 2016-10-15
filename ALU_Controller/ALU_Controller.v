@@ -162,9 +162,8 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                     FC_seh_seb: begin  //seh
                         ALUControl <= SEH_SEB;
                     end
-                    default: begin
+                    default:
                         ALUControl <= ADD;
-                    end
                 endcase
             end
             //All immediate and non-dc operations are below
