@@ -67,7 +67,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     Two4DigitDisplay Display(
         .Clk(Clk), 
         .NumberA(ALU_Out), 
-        .NumberB(PCI_Out), 
+        .NumberB(PC_Out), 
         .out7(out7), 
         .en_out(en_out));
     
@@ -100,22 +100,19 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .SignExt(SignExt));
     
     // Data Path Components
-    Register PC(
+    ProgramCounter PC(
         .In(JIMux_Out),
         .Out(PC_Out),
         .Reset(Rst),
-        .Clk(ClkOut));
-        
+        .Clk(ClkOut));  
     InstructionMemory IM(
         .Address(PC_Out),
-        .Instruction(IM_Out)
-        );
+        .Instruction(IM_Out));
     Mux5bit_2to1 RegDstMux(
         .A(IM_Out[15:11]),
         .B(IM_Out[20:16]), 
         .sel(RegDst), 
-        .Out(RegDst_Out[4:0])
-        );
+        .Out(RegDst_Out[4:0]));
 	AND RF_AND(
 		.InA(RegWrite),
 		.InB(ALU_RegWrite),
@@ -125,7 +122,6 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .ReadRegister2(IM_Out[20:16]),
         .WriteRegister(RegDst_Out[4:0]),
         .WriteData(MemToReg_Out),
-        //.RegWrite(RegWrite),
         .RegWrite(RFAND_Out),
 		.Clk(ClkOut),
         .ReadData1(RF_RD1),

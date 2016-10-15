@@ -43,7 +43,7 @@ module InstructionMemory(Address, Instruction);
     output [31:0] Instruction;    // Instruction at memory location Address
     
 	// Modify the size of the Instructions Array to Be The Total Lines of Code
-    reg [31:0] memory [28:0];
+    reg [31:0] memory [9:0];
     
     initial begin
         memory[0] = 32'b00100000000010000000000000000010;
