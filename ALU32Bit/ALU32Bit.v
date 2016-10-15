@@ -65,29 +65,29 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
 	output reg [31:0] ALUResult;	// answer
 	output Zero;	    // Zero=1 if ALUResult == 0
        
-    localparam [4:0] ADD  =  'b00000,
-                     ADDU  = 'b00001,
-                     SUB   = 'b00010,
-                     MULT  = 'b00011,
-                     MULTU = 'b00100,
-                     AND   = 'b00101,
-                     OR    = 'b00110,
-                     NOR   = 'b00111,
-                     XOR   = 'b01000,
-                     SLL   = 'b01001,
-                     SRL   = 'b01010,
-                     SLLV  = 'b01011,
-                     SLT   = 'b01100,
-                     MOVN  = 'b01101,
-                     MOVZ  = 'b01110,
-                     ROTRV = 'b01111,
-                     SRA   = 'b10000,
-                     SRAV  = 'b10001,
-                     SLTU  = 'b10010,
-                     MUL   = 'b10011,
-                     MADD  = 'b10100,
-                     MSUB  = 'b10101,
-                     SEH_SEB = 'b10110;
+    localparam [4:0] ADD        =  'b00000,
+                     ADDU       = 'b00001,
+                     SUB        = 'b00010,
+                     MULT       = 'b00011,
+                     MULTU      = 'b00100,
+                     AND        = 'b00101,
+                     OR         = 'b00110,
+                     NOR        = 'b00111,
+                     XOR        = 'b01000,
+                     SLL        = 'b01001,
+                     SRL        = 'b01010,
+                     SLLV       = 'b01011,
+                     SLT        = 'b01100,
+                     MOVN       = 'b01101,
+                     MOVZ       = 'b01110,
+                     SRLV       = 'b01111,
+                     SRA        = 'b10000,
+                     SRAV       = 'b10001,
+                     SLTU       = 'b10010,
+                     MUL        = 'b10011,
+                     MADD       = 'b10100,
+                     MSUB       = 'b10101,
+                     SEH_SEB    = 'b10110;
     
     reg [4:0] Operation;
     reg [31:0] temp_1 = 0, temp_2 = 0;
@@ -140,7 +140,11 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
             end
             SLL: begin
             	RegWrite <= 1; // Write Concur
-                ALUResult <= A << B;
+                ALUResult <= B << Shamt;
+            end
+            SLLV: begin
+                RegWrite <= 1; // Write Concur
+                ALUResult <= B << A;
             end
             SRL: begin
             	RegWrite <= 1; // Write Concur
@@ -155,9 +159,13 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                     ALUResult <= temp_1;
                 end
             end
-            SLLV: begin
-            	RegWrite <= 1; // Write Concur
-                ALUResult <= A << B;
+            SRLV: begin
+                RegWrite <= 1; // Write Concur
+                if(Shamt == 0) begin
+                    ALUResult = B >> A;
+                end else begin
+                    //Reserved For ROTRV
+                end
             end
             SLT: begin
             	RegWrite <= 1; // Write Concur
@@ -179,7 +187,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                     RegWrite <= 0; // Write NOT Concur
                 end
             end
-            ROTRV: begin
+/*            ROTRV: begin
                 RegWrite <= 1; // Write Concur
                 temp_1 = A >> B;
                 if(B > 0) begin
@@ -187,7 +195,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                     temp_1 = temp_1 | temp_2;
                 end
                 ALUResult <= temp_1;
-            end
+            end*/
             SRA: begin //Shift right arithmetic
                 RegWrite <= 1; // Write Concur
                 ALUResult = $signed(A) >>> B;

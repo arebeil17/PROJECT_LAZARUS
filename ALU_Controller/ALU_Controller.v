@@ -42,7 +42,7 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      FC_slt  =  'b101010,  //slt
                      FC_movn =  'b001011,  //movn
                      FC_movz =  'b001010,  //movz
-                     FC_rotrv=  'b000110,  //rotrv
+                     FC_srlv =  'b000110,  //rotrv
                      FC_sra  =  'b000011,  //sra
                      FC_srav =  'b000111,  //srav
                      FC_sltu =  'b101011,  //sltu
@@ -69,7 +69,7 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      SLT  = 'b01100, // SLT      | 01100
                      MOVN = 'b01101, // MOVN     | 01101
                      MOVZ = 'b01110, // MOVZ     | 01110
-                     ROTRV= 'b01111, // ROTRV    | 01111
+                     SRLV = 'b01111, // ROTRV    | 01111
                      SRA  = 'b10000, // SRA      | 10000
                      SRAV = 'b10001, // SRAV     | 10001
                      SLTU = 'b10010, // SLTU     | 10010
@@ -77,7 +77,7 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      MADD = 'b10100, // MADD     | 10100
                      MSUB = 'b10101, // MSUB     | 10101
                      SEBSEH = 'b10110; // SEH_SEB  | 10110
-
+                     
 //    reg [3:0] State = DC;        //init dont care
 //    reg [5:0] Function = FC_add; //init to add
 
@@ -129,8 +129,8 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                 FC_movz: begin  //movz
                     ALUControl <= MOVZ;
                 end
-                FC_rotrv: begin  //rotrv
-                    ALUControl <= ROTRV;
+                FC_srlv: begin  //rotrv
+                    ALUControl <= SRLV;
                 end
                 FC_sra: begin  //sra
                     ALUControl <= SRA;
