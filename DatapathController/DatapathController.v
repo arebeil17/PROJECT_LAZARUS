@@ -43,71 +43,72 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
      //always @(change of any input)begin
      always @ (*) begin
         case(State)
-                 INITIAL: begin
-                    RegDst <= 0; RegWrite <= 0; AluSrc <= 0; 
-                    MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                    MemToReg <= 0; SignExt <= 0; AluOp <= 'b0001;
-                 end
-                 OP_000000: begin
-                     RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
-                     MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                     MemToReg <= 0; SignExt <= 1; AluOp <= 'b0000;
-                 end
-                 OP_011100: begin
-                      RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
-                      MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                      MemToReg <= 0; SignExt <= 1; AluOp <= 'b1100;
-                 end
-                 OP_011111: begin
-                       RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
-                       MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                       MemToReg <= 0; SignExt <= 0; AluOp <= 'b0000;
-                 end
-                 OP_001001: begin
-                       RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
-                       MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                       MemToReg <= 0; SignExt <= 0; AluOp <= 'b0111;
-                end
-                OP_001000: begin
-                       RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
-                       MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                       MemToReg <= 0; SignExt <= 1; AluOp <= 'b0001;
-                end
-                OP_001100: begin
-                       RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
-                       MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                       MemToReg <= 0; SignExt <= 1; AluOp <= 'b0100;
-                end
-                OP_001101: begin
-                       RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
-                       MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                       MemToReg <= 0; SignExt <= 1; AluOp <= 'b0011;
-                end
-                OP_001110: begin
-                       RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
-                       MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                       MemToReg <= 0; SignExt <= 1; AluOp <= 'b0101;
-                end
-                OP_001110: begin
-                       RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
-                       MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                       MemToReg <= 0; SignExt <= 1; AluOp <= 'b0101;
-                end
-                OP_001010: begin
-                       RegDst <= 1; RegWrite <= 1; AluSrc <= 0; 
-                       MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                       MemToReg <= 0; SignExt <= 1; AluOp <= 'b1010;
-                end
-                OP_001011: begin
-                       RegDst <= 1; RegWrite <= 1; AluSrc <= 0; 
-                       MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                       MemToReg <= 0; SignExt <= 1; AluOp <= 'b1011;
-                end
-                default: begin
-                    RegDst <= 0; RegWrite <= 0; AluSrc <= 0; 
-                    MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                    MemToReg <= 0; SignExt <= 0; AluOp <= 'b0001;
-                end
+            INITIAL: begin
+                RegDst <= 0; RegWrite <= 0; AluSrc <= 0; 
+                   MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                   MemToReg <= 0; SignExt <= 0; AluOp <= 'b0001;
+            end
+            OP_000000: begin
+                RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0000;
+            end
+            OP_011100: begin
+                RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b1100;
+            end
+            OP_011111: begin
+                //RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 0; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 0; AluOp <= 'b1101;
+            end
+            OP_001001: begin
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 0; AluOp <= 'b0111;
+            end
+            OP_001000: begin
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0001;
+            end
+            OP_001100: begin
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0100;
+            end
+            OP_001101: begin
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0011;
+            end
+            OP_001110: begin
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0101;
+            end
+            OP_001110: begin
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0101;
+            end
+            OP_001010: begin
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 0; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b1010;
+            end
+            OP_001011: begin
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 0; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b1011;
+            end
+            default: begin
+                RegDst <= 0; RegWrite <= 0; AluSrc <= 0; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 0; AluOp <= 'b0001;
+            end
         endcase
      end
       //State Register
