@@ -95,13 +95,13 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      MSUB = 'b10101, // MSUB     | 10101
                      SEH_SEB = 'b10110; // SEH_SEB  | 10110
                                 
-    reg [3:0] State = DC;        //init dont care
-    reg [5:0] Function = FC_add; //init to add
+//    reg [3:0] State = DC;        //init dont care
+//    reg [5:0] Function = FC_add; //init to add
                     
     always @(*) begin
-        case(State)   //First checks AluOp Code
-            DC: begin //If its a dont care then function code is checked
-                case(Function)
+        //case(State)   //First checks AluOp Code
+            if(AluOp == DC) begin //If its a dont care then function code is checked
+                case(Funct)
                     FC_add: begin  //add
                         ALUControl <= ADD;
                     end
@@ -167,71 +167,75 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                     end
                 endcase
             end
-            //All immediate operations are below
-            ADD_I: begin
-                ALUControl <= ADD;
-            end
-            SUB_I: begin
-                ALUControl <= SUB;
-            end
-            OR_I: begin
-                ALUControl <= OR;
-            end
-            AND_I: begin
-                ALUControl <= AND;
-            end
-            XOR_I: begin
-                ALUControl <= XOR;
-            end
-            NOR_I: begin
-                ALUControl <= NOR;
-            end
-            ADDU_I: begin
-                ALUControl <= ADDU;
-            end
-            SUBU_I: begin
-                ALUControl <= SUB;
-            end
-            MULTU_I: begin
-                ALUControl <= MULT;
-            end
-            SLT_I: begin
-                ALUControl <= SLT;
-            end
-            SLT_IU: begin
-                ALUControl <= SLT;
-            end
-            MUL_OP: begin
-                case(Function)
-                    FC_mul: begin  //mul
-                        ALUControl <= MUL;
+            //All immediate and non-dc operations are below
+            else begin
+                case(AluOp) //First Check AluOp Code
+                    ADD_I: begin
+                        ALUControl <= ADD;
                     end
-                    FC_madd: begin  //madd
-                        ALUControl <= MADD;
+                    SUB_I: begin
+                        ALUControl <= SUB;
                     end
-                    FC_msub: begin   //msub
-                        ALUControl <= MSUB;
+                    OR_I: begin
+                        ALUControl <= OR;
+                    end
+                    AND_I: begin
+                        ALUControl <= AND;
+                    end
+                    XOR_I: begin
+                        ALUControl <= XOR;
+                    end
+                    NOR_I: begin
+                        ALUControl <= NOR;
+                    end
+                    ADDU_I: begin
+                        ALUControl <= ADDU;
+                    end
+                    SUBU_I: begin
+                        ALUControl <= SUB;
+                    end
+                    MULTU_I: begin
+                        ALUControl <= MULT;
+                    end
+                    SLT_I: begin
+                        ALUControl <= SLT;
+                    end
+                    SLT_IU: begin
+                        ALUControl <= SLT;
+                    end
+                    MUL_OP: begin
+                        case(Funct)
+                            FC_mul: begin  //mul
+                                ALUControl <= MUL;
+                            end
+                            FC_madd: begin  //madd
+                                ALUControl <= MADD;
+                            end
+                            FC_msub: begin   //msub
+                                ALUControl <= MSUB;
+                            end
+                            default: begin
+                                ALUControl <= ADD;
+                            end
+                        endcase
                     end
                     default: begin
                         ALUControl <= ADD;
                     end
-                endcase
-            end
-            default:
-                State <= DC;
-        endcase
+            endcase
+            end // End Else
     end
     
-    //State Register
-    always @(Rst, AluOp, Funct) begin
-        if (Rst == 1) begin
-            State <= DC;         //reset as Dont care
-            Function <= FC_add;  //reset w/add as function code
-        end    
-        else begin
-            State <= AluOp;     //update AluOp code 
-            Function <= Funct;  //update Function code
-        end
-    end    
-    
+//    //State Register
+//    always @(Rst, AluOp, Funct) begin
+//        if (Rst == 1) begin
+//            State <= DC;         //reset as Dont care
+//            Function <= FC_add;  //reset w/add as function code
+//        end    
+//        else begin
+//            State <= AluOp;     //update AluOp code 
+//            Function <= Funct;  //update Function code
+//        end
+//    end
+
 endmodule

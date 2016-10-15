@@ -30,8 +30,8 @@ module Mod_Clk_Div(In, Clk, Rst, ClkOut);
               DivVal_10 = 4166666,   //Constant for 12 Hz
               DivVal_13 = 3571428,   //Constant for 14 Hz
               DivVal_14 = 3125000,   //Constant for 16 Hz
-              DivVal_Test1 = 2,
-              DivVal_Test2 = 1;       //For test benching
+              DivVal_Test1 = 1,
+              DivVal_Test2 = 2;       //For test benching
               
     reg [28:0] DivCnt = 0;
     reg ClkInt = 0;
@@ -63,7 +63,7 @@ module Mod_Clk_Div(In, Clk, Rst, ClkOut);
             //TempSel <= DivVal_Test1;
        end
        else if(4'b0001==In) begin
-            TempSel <= DivVal_Test2;
+            TempSel <= DivVal_Test1;
             //TempSel <= DivVal_Test1;
        end
        else if(4'b0010==In) begin

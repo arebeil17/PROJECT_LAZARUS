@@ -20,8 +20,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, MemRead, Branch, MemToReg, SignExt);
     
-    //input Rst;
-    
     input[5:0] OpCode;
     
     output reg RegDst, RegWrite, AluSrc, MemWrite, MemRead, Branch, MemToReg, SignExt;
@@ -43,7 +41,7 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
      reg [5:0] State = INITIAL;
      
      //always @(change of any input)begin
-     always @ (*) begin
+     always @ (OpCode, State) begin
         case(State)
                  INITIAL: begin
                     RegDst <= 0; RegWrite <= 0; AluSrc <= 0; 
@@ -106,7 +104,9 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                        MemToReg <= 0; SignExt <= 1; AluOp <= 'b1011;
                 end
                 default: begin
-                    State <= INITIAL;
+                    RegDst <= 0; RegWrite <= 0; AluSrc <= 0; 
+                    MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                    MemToReg <= 0; SignExt <= 0; AluOp <= 'b0001;
                 end
         endcase
      end

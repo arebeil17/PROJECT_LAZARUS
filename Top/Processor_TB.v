@@ -22,19 +22,23 @@ module Processor_TB();
     
     reg Clk, Rst = 0;
     
-    top CPU_test(Clk, Rst);
+    wire [6:0] out7;
+    wire [7:0] en_out;
+    wire ClkOut;
+
+    top CPU_test(Clk, Rst, out7, en_out, ClkOut);
     
     always begin
         Clk <= 0;
-        #10; 
+        #5; 
         Clk <= 1;
-        #10;
+        #5;
     end
     
     initial begin
         //Rst <= 1;
-        #100 Rst <= 1;
-        #10 Rst <= 0;
+        #20 Rst <= 1;
+        #20 Rst <= 0;
     end
     
 endmodule
