@@ -35,7 +35,7 @@ module ProgramCounter(In, Out, Reset, Clk);
         if(Reset == 1)begin
             Out <= 0;
         end else begin
-            if(In <= 36)begin
+            if(In <= 116)begin
                 Out <= In;
             end else begin
                 Out <= 0;
