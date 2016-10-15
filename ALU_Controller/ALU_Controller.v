@@ -213,8 +213,9 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                     end
                 endcase
             end
-            default:
+            default: begin
                 State <= DC;
+            end
         endcase
     end
     
