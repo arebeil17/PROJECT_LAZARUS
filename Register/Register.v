@@ -41,7 +41,7 @@ module Register(In, Out, Reset, Clk);
             Out <= 0;
             //hold <= 1;
         end else if(hold) begin
-            Out <= PC;
+            Out <= In;
             hold <= 0; 
         end else begin
             Out <= In;

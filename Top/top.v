@@ -73,8 +73,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     
     // Clock Divider
     Mod_Clk_Div MCD(
-        .In(4'b1111), // For Testing
-        //.In(4'b0000), // For Use 
+        //.In(4'b1111), // For Testing
+        .In(4'b0000), // For Use 
         .Clk(Clk), 
         .Rst(Rst), 
         .ClkOut(ClkOut));
@@ -101,8 +101,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     
     // Data Path Components
     Register PC(
-        .Address(JIMux_Out),
-        .PC(PC_Out),
+        .In(JIMux_Out),
+        .Out(PC_Out),
         .Reset(Rst),
         .Clk(ClkOut));
         
