@@ -232,10 +232,9 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 else               //Else no sign extend required
                     ALUResult <= B;
             end
-            default: begin
+            default:
             	//Move <= 0; // Write NOT Concur
                 ALUResult <= 0;
-            end
         endcase
     end
     
