@@ -37,7 +37,7 @@ module Register(In, Out, Reset, Clk);
         if(Reset == 1)begin
             Out <= 0;
             hold <= 1;
-        end else if(In >= 36)begin
+        end else if(In > 36)begin
             Out <= 0;
             //hold <= 1;
         end else if(hold) begin

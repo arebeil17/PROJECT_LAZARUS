@@ -41,7 +41,7 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
      reg [5:0] State = INITIAL;
      
      //always @(change of any input)begin
-     always @ (OpCode, State) begin
+     always @ (*) begin
         case(State)
                  INITIAL: begin
                     RegDst <= 0; RegWrite <= 0; AluSrc <= 0; 
