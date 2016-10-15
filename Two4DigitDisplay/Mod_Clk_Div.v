@@ -63,7 +63,7 @@ module Mod_Clk_Div(In, Clk, Rst, ClkOut);
             //TempSel <= DivVal_Test1;
        end
        else if(4'b0001==In) begin
-            TempSel <= DivVal_0;
+            TempSel <= DivVal_Test2;
             //TempSel <= DivVal_Test1;
        end
        else if(4'b0010==In) begin

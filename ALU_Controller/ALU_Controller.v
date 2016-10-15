@@ -162,8 +162,9 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                     FC_seh_seb: begin  //seh
                         ALUControl <= SEH_SEB;
                     end
-                    default:
+                    default: begin
                         ALUControl <= ADD;
+                    end
                 endcase
             end
             //All immediate operations are below
@@ -210,6 +211,9 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                     end
                     FC_msub: begin   //msub
                         ALUControl <= MSUB;
+                    end
+                    default: begin
+                        ALUControl <= ADD;
                     end
                 endcase
             end

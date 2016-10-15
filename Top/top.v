@@ -72,7 +72,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     
     // Clock Divider
     Mod_Clk_Div MCD(
-        .In(4'b1111), 
+        .In(4'b0001), 
         .Clk(Clk), 
         .Rst(Rst), 
         .ClkOut(ClkOut));
