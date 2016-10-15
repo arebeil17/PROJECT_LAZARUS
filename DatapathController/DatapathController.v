@@ -106,7 +106,7 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                        MemToReg <= 0; SignExt <= 1; AluOp <= 'b1011;
                 end
                 default: begin
-                    //State <= INITIAL;
+                    State <= INITIAL;
                 end
         endcase
      end

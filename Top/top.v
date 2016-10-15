@@ -50,7 +50,6 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         MemRead,            // Data Memory Read Control
         MemToReg,           // MemToReg Mux Control
         RegWrite,           // Register File Write Control
-        ALU_RegWrite,       // RegWrite Concur from ALU
         Branch,             // Branch Control
         SignExt,            // Sign Extend Control
         JIMuxControl;       // PC Jump/Increment Mux Control
@@ -66,8 +65,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     // Output 8 x Seven Segment
     Two4DigitDisplay Display(
         .Clk(Clk), 
-        .NumberA(ALU_Out[7:0]), 
-        .NumberB(PCI_Out[7:0]), 
+        .NumberA(ALU_Out), 
+        .NumberB(PCI_Out), 
         .out7(out7), 
         .en_out(en_out));
     
@@ -115,17 +114,17 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .sel(RegDst), 
         .Out(RegDst_Out[4:0])
         );
-	AND RF_AND(
-		.InA(RegWrite),
-		.InB(ALU_RegWrite),
-		.Out(RF_AND_Out));
+	//AND RF_AND(
+	//	.InA(RegWrite),
+	//	.InB(ALUMoveOut),
+	//	.Out(RF_AND_Out));
 	RegisterFile RF(
         .ReadRegister1(IM_Out[25:21]),
         .ReadRegister2(IM_Out[20:16]),
         .WriteRegister(RegDst_Out[4:0]),
         .WriteData(MemToReg_Out),
-        //.RegWrite(RegWrite),
-        .RegWrite(RF_AND_Out),
+        .RegWrite(RegWrite),
+        //.RegWrite(RF_AND_Out),
 		.Clk(ClkOut),
         .ReadData1(RF_RD1),
         .ReadData2(RF_RD2));
@@ -146,8 +145,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .Zero(ALU_Zero),
         .HiLoEn(HiLoEn),
         .HiLoWrite(HiLoWrite), 
-        .HiLoRead(HiLoRead),
-        .RegWrite(ALU_RegWrite));
+        .HiLoRead(HiLoRead)
+        );
     HiLoRegister HiLo(
         .WriteEnable(HiLoEn) , 
         .WriteData(HiLoWrite), 
