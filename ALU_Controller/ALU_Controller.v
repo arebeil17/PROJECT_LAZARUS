@@ -22,7 +22,8 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      MULTU_I = 'b1001, //MULTU IMMDEDIATE
                      SLT_I =   'b1010, //SLT IMMEDIATE
                      SLT_IU =  'b1011, //SLTU IMMEDIATE
-                     MUL_OP =  'b1100; //ALL MULTIPLY OPERATIONS
+                     MUL_OP =  'b1100, //ALL MULTIPLY OPERATIONS
+                     SEBSEH_OP = 'b1101; //SIGN EXTEND OPERATIONS
     
     //Instruction Function code 6 bit input definitions
     //---------------Dont Care FUNCTION FIELDS                
@@ -75,11 +76,11 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      MUL  = 'b10011, // MUL      | 10011
                      MADD = 'b10100, // MADD     | 10100
                      MSUB = 'b10101, // MSUB     | 10101
-                     SEH_SEB = 'b10110; // SEH_SEB  | 10110
-                                
+                     SEBSEH = 'b10110; // SEH_SEB  | 10110
+
 //    reg [3:0] State = DC;        //init dont care
 //    reg [5:0] Function = FC_add; //init to add
-                    
+
     always @(*) begin
         if(AluOp == DC) begin //If its a dont care then function code is checked
             case(Funct)
@@ -140,9 +141,10 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                 FC_sltu: begin  //sltu
                     ALUControl <= SLTU;
                 end
-                FC_seh_seb: begin  //seh
-                    ALUControl <= SEH_SEB;
-                end
+// SEB & SEH Can Not Be Alu_Op = DC, the function code overlaps with ADD
+//                FC_seh_seb: begin  //seh
+//                    ALUControl <= SEH_SEB;
+//                end
                 default: begin
                     ALUControl <= ADD;
                 end
@@ -201,6 +203,9 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                             ALUControl <= ADD;
                         end
 //                    endcase
+                end
+                SEBSEH_OP: begin
+                    ALUControl <= SEBSEH;
                 end
                 default: begin
                     ALUControl <= ADD;
