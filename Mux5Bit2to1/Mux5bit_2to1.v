@@ -20,13 +20,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module Mux5bit_2to1(A, B, sel, Out);
+module Mux5bit_2to1(In0, In1, sel, Out);
     
     input sel;
-    input [4:0] A, B;
+    input [4:0] In0, In1;
     
     output [4:0] Out;
     
-    assign Out = (sel) ? (B):(A);
+    assign Out = (sel) ? (In1):(In0);
     
 endmodule

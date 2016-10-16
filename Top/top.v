@@ -109,8 +109,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .Address(PC_Out),
         .Instruction(IM_Out));
     Mux5bit_2to1 RegDstMux(
-        .A(IM_Out[15:11]),
-        .B(IM_Out[20:16]), 
+        .In0(IM_Out[15:11]),
+        .In1(IM_Out[20:16]), 
         .sel(RegDst), 
         .Out(RegDst_Out[4:0]));
 	AND RF_AND(
