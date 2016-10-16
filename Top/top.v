@@ -148,7 +148,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     HiLoRegister HiLo(
         .WriteEnable(HiLoEn) , 
         .WriteData(HiLoWrite), 
-        .ReadData(HiLoRead), 
+        .HiLoReg(HiLoRead), 
         .Clk(ClkOut), 
         .Reset(Rst));
     DataMemory DM(
