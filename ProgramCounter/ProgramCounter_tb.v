@@ -14,7 +14,7 @@ module ProgramCounter_tb();
 
 	wire [31:0] PCResult;
 
-    ProgramCounter u0(
+    ProgramCounter PC(
         .Address(Address), 
         .PCResult(PCResult), 
         .Reset(Reset), 
