@@ -1,23 +1,5 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 10/05/2016 06:46:30 PM
-// Design Name: 
-// Module Name: DatapathController
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+
 module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, MemRead, Branch, MemToReg, SignExt);
     
     input[5:0] OpCode;
