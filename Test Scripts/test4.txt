@@ -1,6 +1,7 @@
 .text
 # Load Data
-.main	addi	$t0,	$0,		1
+.main	
+		addi	$t0,	$0,		1
 		addi	$t1,	$0,		2
 		addi	$t2,	$0,		3
 		addi	$t3,	$0,		4
