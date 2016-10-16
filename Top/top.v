@@ -101,8 +101,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     
     // Data Path Components
     ProgramCounter PC(
-        .In(JIMux_Out),
-        .Out(PC_Out),
+        .Address(JIMux_Out),
+        .PC(PC_Out),
         .Reset(Rst),
         .Clk(ClkOut));  
     InstructionMemory IM(

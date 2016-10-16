@@ -164,7 +164,12 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 if(Shamt == 0) begin
                     ALUResult = B >> A;
                 end else begin
-                    //Reserved For ROTRV
+                    temp_1 = B >> A;
+                    if(B > 0) begin
+                        temp_2 = B << (32 - A);
+                        temp_1 = temp_1 | temp_2;
+                    end
+                ALUResult <= temp_1;
                 end
             end
             SLT: begin
@@ -192,21 +197,15 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 end
             end
 /*            ROTRV: begin
-                RegWrite <= 1; // Write Concur
-                temp_1 = A >> B;
-                if(B > 0) begin
-                    temp_2 = A << (32 - B);
-                    temp_1 = temp_1 | temp_2;
-                end
-                ALUResult <= temp_1;
+                
             end*/
             SRA: begin //Shift right arithmetic
                 RegWrite <= 1; // Write Concur
-                ALUResult = $signed(A) >>> B;
+                ALUResult = (B[30:0] >> Shamt) | (B[31] << 31);
             end
             SRAV: begin
             	RegWrite <= 1; // Write Concur
-                ALUResult = $signed(A) >>> B;
+                ALUResult = (B[30:0] >> A) | (B[31] << 31);
             end
             MUL: begin
             	RegWrite <= 1; // Write Concur
@@ -229,17 +228,10 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
             SEH_SEB: begin
             	RegWrite <= 1; // Write Concur
                 if(Shamt == 'b11000) begin
-                    ALUResult = {{24{B[7]}},B[7:0]};
-                end else if(Shamt == 'b10000) begin
                     ALUResult = {{16{B[15]}},B[15:0]};
+                end else if(Shamt == 'b10000) begin
+                    ALUResult = {{24{B[7]}},B[7:0]};
                 end
-/*                if(B[15] == 1)     //First check half word sign extend required
-                    ALUResult = (B | 'hffff0000);
-                else if(B[7] == 1) //Else check if byte sign extend required
-                    ALUResult = (B | 'hffffff00);
-                else begin         //Else no sign extend required
-                    ALUResult <= B;
-                end*/
             end
             default: begin
             	RegWrite <= 0; // Write NOT Concur

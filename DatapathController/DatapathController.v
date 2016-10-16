@@ -41,7 +41,7 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 MemToReg <= 0; SignExt <= 1; AluOp <= 'b1100;
             end
             OP_011111: begin
-                RegDst <= 1; RegWrite <= 1; AluSrc <= 0; 
+                RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 0; SignExt <= 0; AluOp <= 'b1101;
             end
@@ -76,12 +76,12 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 MemToReg <= 0; SignExt <= 1; AluOp <= 'b0101;
             end
             OP_001010: begin
-                RegDst <= 1; RegWrite <= 1; AluSrc <= 0; 
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 0; SignExt <= 1; AluOp <= 'b1010;
             end
             OP_001011: begin
-                RegDst <= 1; RegWrite <= 1; AluSrc <= 0; 
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 0; SignExt <= 1; AluOp <= 'b1011;
             end
