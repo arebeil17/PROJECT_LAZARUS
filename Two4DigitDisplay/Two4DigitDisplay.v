@@ -11,7 +11,7 @@
 
 module Two4DigitDisplay(Clk, NumberA, NumberB, out7, en_out);
 
-    parameter NUM_WIDTH = 8;
+    parameter NUM_WIDTH = 13;
 
     input  Clk;
     input  [NUM_WIDTH - 1:0] NumberA, NumberB;
