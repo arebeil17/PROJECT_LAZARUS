@@ -171,6 +171,10 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
             	RegWrite <= 1; // Write Concur
                 ALUResult = ($signed(A) < $signed(B)) ? (1):(0); 
             end
+            SLTU: begin
+                RegWrite <= 1; // Write Concur
+                ALUResult = (A < B) ? (1):(0);
+            end
             MOVN: begin
                 if(B != 0) begin
                     RegWrite <= 1; // Write Concur
@@ -203,10 +207,6 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
             SRAV: begin
             	RegWrite <= 1; // Write Concur
                 ALUResult = $signed(A) >>> B;
-            end
-            SLTU: begin
-                RegWrite <= 1; // Write Concur
-                ALUResult = (A < B) ? (1):(0);
             end
             MUL: begin
             	RegWrite <= 1; // Write Concur
