@@ -53,6 +53,8 @@
 		multu	$t2,	$t7				# 3 * -2 = -4294967302
 		multu	$t8,	$t2				# -3 * 3 = -8589934601
 		multu	$t6,	$t7				# -1 * -2 = -12884901886
+		mflo	$s4
+		mfhi	$s5
 		mtlo	$t6						# Lo = -1
 		mtlo	$t0						# Lo = 1
 		mtlo	$0						# Lo = 0
@@ -67,6 +69,8 @@
 		msub	$t2,	$t7				#  (-13) - 3 * -2 = -7
 		msub	$t8,	$t2				#  (-7) - -3 * 3 = 2
 		msub	$t6,	$t7				#  (2) - -1 * -2 = 0
+		mflo	$s6
+		mfhi	$s7
 		
 		#
 		# Logic Tests
