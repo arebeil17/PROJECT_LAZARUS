@@ -1,7 +1,8 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// GROUP: 36
+// TEAM MEMBERS: ANDRES REBEIL 50%
+//               MIKE HARMON   50%
 // 
 // Create Date: 10/10/2016 12:14:44 PM
 // Design Name: 
