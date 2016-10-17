@@ -3,11 +3,11 @@
 module ALU_Controller(Rst, AluOp, Funct, ALUControl);
 
     input Rst;
-    input [4:0] AluOp;           //4 bit AluOp code sent from controller 
+    input [3:0] AluOp;           //4 bit AluOp code sent from controller 
     
     input [5:0] Funct;           //6 bit Instruction function field
     
-    output reg [4:0] ALUControl; //5 bit output control signal sent to ALU
+    output reg [4:0] ALUControl; //4 bit output control signal sent to ALU
     
     //Controller AluOp 4 bit inputs (also are the state encodings)
     localparam [3:0] ALUOP_DC 		= 'b0000, // DONT CARE
@@ -16,7 +16,7 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      ALUOP_ORI 		= 'b0011, // OR IMMEDIATE
                      ALUOP_ANDI 	= 'b0100, // AND IMMEDIATE (LW & SW TOO)
                      ALUOP_XORI 	= 'b0101, // XOR IMMEDIATE
-                     ALUOP_NORI 		= 'b0110, // NOR IMMDEIATE
+                     ALUOP_NORI 	= 'b0110, // NOR IMMDEIATE
                      ALUOP_ADDUI 	= 'b0111, // ADDU IMMEDIATE
                      ALUOP_SUBUI 	= 'b1000, // SUBU IMMEDIATE
                      ALUOP_MULTUI 	= 'b1001, // MULTU IMMDEDIATE
