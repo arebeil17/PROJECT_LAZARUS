@@ -46,7 +46,7 @@ module InstructionMemory(Address, Instruction);
     reg [31:0] memory [65:0];
     
     initial begin
-memory[0] = 32'b00100000000100000000000000000001;	//	main:	addi	$s0, $zero, 1
+ memory[0] = 32'b00100000000100000000000000000001;	//	main:	addi	$s0, $zero, 1
     memory[1] = 32'b00100000000100010000000000000001;    //        addi    $s1, $zero, 1
     memory[2] = 32'b00000010000100011000000000100100;    //        and    $s0, $s0, $s1
     memory[3] = 32'b00000010000000001000000000100100;    //        and    $s0, $s0, $zero

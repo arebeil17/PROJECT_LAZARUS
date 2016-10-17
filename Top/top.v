@@ -38,7 +38,10 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         PCI_Out,        // Output of PCI (PC Incrementer)
         JA_Out,         // Output of JA (Jump Adder)
         MemToReg_Out,   // Output
-        RFAND_Out;      // Output of the RFAND
+        RFAND_Out,      // Output of the RFAND
+        AluOutReg,
+        PC_OutReg;
+        
     wire ALU_Zero;      // Output of ALU Zero Flag
     
     wire HiLoEn;
@@ -66,14 +69,26 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     // Output 8 x Seven Segment
     Two4DigitDisplay Display(
         .Clk(Clk), 
-        .NumberA(ALU_Out), 
-        .NumberB(PC_Out), 
+        .NumberA(AluOutReg), 
+        .NumberB(PC_OutReg), 
         .out7(out7), 
         .en_out(en_out));
+        
+     Reg32 AluOutput(
+        .Clk(ClkOut), 
+        .Rst(Rst), 
+        .data(ALU_Out), 
+        .Output(AluOutReg));
+        
+     Reg32 PCOutput(
+        .Clk(ClkOut), 
+        .Rst(Rst), 
+        .data(PC_Out), 
+        .Output(PC_OutReg));
     
     // Clock Divider
     Mod_Clk_Div MCD(
-        .In(4'b1111), // For Testing
+        .In(4'b0001), // For Testing
         //.In(4'b0000), // For Use 
         .Clk(Clk), 
         .Rst(Rst), 
