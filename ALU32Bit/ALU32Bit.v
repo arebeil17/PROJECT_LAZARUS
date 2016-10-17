@@ -92,17 +92,10 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                      MADD       = 'b10100,
                      MSUB       = 'b10101,
                      SEH_SEB    = 'b10110,
-<<<<<<< HEAD
-                     MFHI = 'b10111,
-                     MFLO = 'b11000,
-                     MTHI = 'b11001,
-                     MTLO = 'b11010;
-=======
                      MFHI       = 'b10111, // MFHI     | 10111
                      MFLO       = 'b11000, // MFLO     | 11000
                      MTHI       = 'b11001, // MTHI     | 11001
                      MTLO       = 'b11010; // MTLO     | 11010
->>>>>>> origin/master
     
     reg [4:0] Operation;
     reg [31:0] temp_1 = 0, temp_2 = 0;
@@ -211,9 +204,6 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                     RegWrite <= 0; // Write NOT Concur
                 end
             end
-/*            ROTRV: begin
-                
-            end*/
             SRA: begin //Shift right arithmetic
                 RegWrite <= 1; // Write Concur
                 ALUResult = (B[30:0] >> Shamt) | (B[31] << 31);
@@ -248,7 +238,6 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                     ALUResult = {{24{B[7]}},B[7:0]};
                 end
             end
-<<<<<<< HEAD
             MFHI: begin
                 RegWrite <= 1; // Write Concur
                 ALUResult = HiLoRead[63:32];
@@ -268,7 +257,6 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 HiLoWrite = {HiLoRead[63:32],A};
                 HiLoEn = 1;
             end
-=======
             MFHI: begin  
                 ALUResult <= HiLoRead[63:32];
             end
@@ -287,7 +275,6 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 HiLoWrite[31:0] <= A; 
                 ALUResult <= 0;
             end 
->>>>>>> origin/master
             default: begin
             	RegWrite <= 0; // Write NOT Concur
                 ALUResult <= 0;
