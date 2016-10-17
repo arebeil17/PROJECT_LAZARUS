@@ -50,8 +50,10 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      FC_mul  =  'b000010,  //mul
                      FC_madd =  'b000000,  //madd
                      FC_msub =  'b000100,  //msub
-     //---------------SEH & SEB FUNCTION FIELDS
-                     FC_seh_seb  =  'b100000;  //seh
+                     FC_mfhi = 'b010000, // mfhi
+                     FC_mflo = 'b010010, // mflo
+                     FC_mthi = 'b010001, // mthi
+                     FC_mtlo = 'b010011; // mtlo                
      
      //ALU control 5 bit output definitions                
     localparam [4:0] ADD  = 'b00000, // ADD  	 | 00000
@@ -76,7 +78,11 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      MUL  = 'b10011, // MUL      | 10011
                      MADD = 'b10100, // MADD     | 10100
                      MSUB = 'b10101, // MSUB     | 10101
-                     SEBSEH = 'b10110; // SEH_SEB  | 10110
+                     SEBSEH = 'b10110,// SEH_SEB  | 10110
+                     MFHI = 'b10111, // MFHI     | 10111
+                     MFLO = 'b11000, // MFLO     | 11000
+                     MTHI = 'b11001, // MTHI     | 11001
+                     MTLO = 'b11010; // MTLO     | 11010
                      
 //    reg [3:0] State = DC;        //init dont care
 //    reg [5:0] Function = FC_add; //init to add
@@ -141,6 +147,18 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                 FC_sltu: begin  //sltu
                     ALUControl <= SLTU;
                 end
+                FC_mfhi: begin  // mfhi
+                    ALUControl <= MFHI;
+                end
+                FC_mflo: begin  // mflo
+                    ALUControl <= MFLO;
+                end
+                FC_mthi: begin  // mthi
+                    ALUControl <= MTHI;
+                end
+                FC_mtlo: begin  // mtlo
+                    ALUControl <= MTLO;
+                end 
                 default: begin
                     ALUControl <= ADD;
                 end

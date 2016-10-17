@@ -101,8 +101,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     
     // Data Path Components
     ProgramCounter PC(
-        .In(JIMux_Out),
-        .Out(PC_Out),
+        .Address(JIMux_Out),
+        .PC(PC_Out),
         .Reset(Rst),
         .Clk(ClkOut));  
     InstructionMemory IM(
@@ -148,7 +148,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     HiLoRegister HiLo(
         .WriteEnable(HiLoEn) , 
         .WriteData(HiLoWrite), 
-        .ReadData(HiLoRead), 
+        .HiLoReg(HiLoRead), 
         .Clk(ClkOut), 
         .Reset(Rst));
     DataMemory DM(

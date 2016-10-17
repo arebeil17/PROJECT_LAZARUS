@@ -21,7 +21,7 @@
 // 'B'. The 'Zero' flag is high when 'ALUResult' is '0'. The 'ALUControl' signal 
 // should determine the function of the ALU based on the table below:-
 // ALL PHASE 1 OPERATIONS ARE LISTED BELOW
-// Op   	| 'ALUControl' value
+// Op   	| 'ALUControl value
 // ==========================
 // ADD  	| 00000
 // ADDU 	| 00001
@@ -46,6 +46,10 @@
 // MADD 	| 10100
 // MSUB 	| 10101
 // SEH_SEB  | 10110
+// MFHI     | 10111
+// MFLO     | 11000
+// MTHI     | 11001
+// MTLO     | 11010
 // 
 // NOTE:-
 // SLT (i.e., set on less than): ALUResult is '32'h000000001' if A < B.
@@ -60,12 +64,12 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
     input [63:0] HiLoRead;
     
     output reg HiLoEn = 0;
-    output reg [63:0] HiLoWrite;
+    output reg [63:0] HiLoWrite = 0;
     output reg RegWrite;
 	output reg [31:0] ALUResult;	// answer
 	output Zero;	    // Zero=1 if ALUResult == 0
        
-    localparam [4:0] ADD        =  'b00000,
+    localparam [4:0] ADD        = 'b00000,
                      ADDU       = 'b00001,
                      SUB        = 'b00010,
                      MULT       = 'b00011,
@@ -87,13 +91,17 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                      MUL        = 'b10011,
                      MADD       = 'b10100,
                      MSUB       = 'b10101,
-                     SEH_SEB    = 'b10110;
+                     SEH_SEB    = 'b10110,
+                     MFHI       = 'b10111, // MFHI     | 10111
+                     MFLO       = 'b11000, // MFLO     | 11000
+                     MTHI       = 'b11001, // MTHI     | 11001
+                     MTLO       = 'b11010; // MTLO     | 11010
     
     reg [4:0] Operation;
     reg [31:0] temp_1 = 0, temp_2 = 0;
     reg [63:0] temp64 = 0;
     
-    always @(A, B, ALUControl, Operation, Shamt) begin
+    always @(*) begin
         HiLoEn = 0;
         case(Operation)
             ADD: begin
@@ -164,7 +172,12 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 if(Shamt == 0) begin
                     ALUResult = B >> A;
                 end else begin
-                    //Reserved For ROTRV
+                    temp_1 = B >> A;
+                    if(B > 0) begin
+                        temp_2 = B << (32 - A);
+                        temp_1 = temp_1 | temp_2;
+                    end
+                ALUResult <= temp_1;
                 end
             end
             SLT: begin
@@ -191,22 +204,13 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                     RegWrite <= 0; // Write NOT Concur
                 end
             end
-/*            ROTRV: begin
-                RegWrite <= 1; // Write Concur
-                temp_1 = A >> B;
-                if(B > 0) begin
-                    temp_2 = A << (32 - B);
-                    temp_1 = temp_1 | temp_2;
-                end
-                ALUResult <= temp_1;
-            end*/
             SRA: begin //Shift right arithmetic
                 RegWrite <= 1; // Write Concur
-                ALUResult = $signed(A) >>> B;
+                ALUResult = (B[30:0] >> Shamt) | (B[31] << 31);
             end
             SRAV: begin
             	RegWrite <= 1; // Write Concur
-                ALUResult = $signed(A) >>> B;
+                ALUResult = (B[30:0] >> A) | (B[31] << 31);
             end
             MUL: begin
             	RegWrite <= 1; // Write Concur
@@ -229,21 +233,52 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
             SEH_SEB: begin
             	RegWrite <= 1; // Write Concur
                 if(Shamt == 'b11000) begin
-                    ALUResult = {{24{B[7]}},B[7:0]};
-                end else if(Shamt == 'b10000) begin
                     ALUResult = {{16{B[15]}},B[15:0]};
+                end else if(Shamt == 'b10000) begin
+                    ALUResult = {{24{B[7]}},B[7:0]};
                 end
-/*                if(B[15] == 1)     //First check half word sign extend required
-                    ALUResult = (B | 'hffff0000);
-                else if(B[7] == 1) //Else check if byte sign extend required
-                    ALUResult = (B | 'hffffff00);
-                else begin         //Else no sign extend required
-                    ALUResult <= B;
-                end*/
             end
+            MFHI: begin
+                RegWrite <= 1; // Write Concur
+                ALUResult = HiLoRead[63:32];
+            end
+            MFLO: begin
+                RegWrite <= 1; // Write Concur
+                ALUResult = HiLoRead[31:0];
+            end
+            MTHI: begin
+                RegWrite <= 0; // Write NOT Concur
+                HiLoEn = 1;
+                HiLoWrite = {A,HiLoRead[31:0]};
+                ALUResult = 0;
+            end
+            MTLO: begin
+                RegWrite <= 0; // Write NOT Concur
+                HiLoWrite = {HiLoRead[63:32],A};
+                HiLoEn = 1;
+            end
+            MFHI: begin  
+                ALUResult <= HiLoRead[63:32];
+            end
+            MFLO: begin  
+                ALUResult <= HiLoRead[31:0];
+            end
+            MTHI: begin  
+               HiLoEn = 1;
+               HiLoWrite[63:32] <= A;
+               //HiLoWrite[31:0] = HiLoRead[31:0];
+               ALUResult <= 0;
+            end
+            MTLO: begin
+                HiLoEn = 1;
+               // HiLoWrite[63:32] = HiLoRead[63:32];
+                HiLoWrite[31:0] <= A; 
+                ALUResult <= 0;
+            end 
             default: begin
             	RegWrite <= 0; // Write NOT Concur
                 ALUResult <= 0;
+                HiLoEn <= 0;
             end
         endcase
     end
