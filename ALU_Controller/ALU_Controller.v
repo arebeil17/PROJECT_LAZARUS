@@ -50,9 +50,11 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      FC_mul  =  'b000010,  //mul
                      FC_madd =  'b000000,  //madd
                      FC_msub =  'b000100,  //msub
-     //---------------SEH & SEB FUNCTION FIELDS
-                     FC_seh_seb  =  'b100000;  //seh
-     
+                     FC_mthi =  'b010001,
+                     FC_mtlo =  'b010011,
+                     FC_mfhi =  'b010000,
+                     FC_mflo =  'b010010;
+                     
      //ALU control 5 bit output definitions                
     localparam [4:0] ADD  = 'b00000, // ADD  	 | 00000
                      ADDU = 'b00001, // ADDU     | 00001
@@ -76,8 +78,11 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      MUL  = 'b10011, // MUL      | 10011
                      MADD = 'b10100, // MADD     | 10100
                      MSUB = 'b10101, // MSUB     | 10101
-                     SEBSEH = 'b10110; // SEH_SEB  | 10110
-                     
+                     SEBSEH = 'b10110, // SEH_SEB  | 10110
+                     MFHI = 'b10111,
+                     MFLO = 'b11000,
+                     MTHI = 'b11001,
+                     MTLO = 'b11010;
 //    reg [3:0] State = DC;        //init dont care
 //    reg [5:0] Function = FC_add; //init to add
 

@@ -87,7 +87,11 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                      MUL        = 'b10011,
                      MADD       = 'b10100,
                      MSUB       = 'b10101,
-                     SEH_SEB    = 'b10110;
+                     SEH_SEB    = 'b10110,
+                     MFHI = 'b10111,
+                     MFLO = 'b11000,
+                     MTHI = 'b11001,
+                     MTLO = 'b11010;
     
     reg [4:0] Operation;
     reg [31:0] temp_1 = 0, temp_2 = 0;
@@ -232,6 +236,25 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 end else if(Shamt == 'b10000) begin
                     ALUResult = {{24{B[7]}},B[7:0]};
                 end
+            end
+            MFHI: begin
+                RegWrite <= 1; // Write Concur
+                ALUResult = HiLoRead[63:32];
+            end
+            MFLO: begin
+                RegWrite <= 1; // Write Concur
+                ALUResult = HiLoRead[31:0];
+            end
+            MTHI: begin
+                RegWrite <= 0; // Write NOT Concur
+                HiLoEn = 1;
+                HiLoWrite = {A,HiLoRead[31:0]};
+                ALUResult = 0;
+            end
+            MTLO: begin
+                RegWrite <= 0; // Write NOT Concur
+                HiLoWrite = {HiLoRead[63:32],A};
+                HiLoEn = 1;
             end
             default: begin
             	RegWrite <= 0; // Write NOT Concur
