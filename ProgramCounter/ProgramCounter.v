@@ -37,7 +37,7 @@
          if(Reset == 1)begin
              PC <= 0;
              hold <= 1;
-         end else if(Address > 416)begin
+         end else if(Address > 452)begin
              PC <= 0;
              //hold <= 1;
          end else if(hold) begin

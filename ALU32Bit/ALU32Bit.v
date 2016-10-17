@@ -265,14 +265,12 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
             end
             MTHI: begin  
                HiLoEn = 1;
-               HiLoWrite[63:32] <= A;
-               //HiLoWrite[31:0] = HiLoRead[31:0];
+               HiLoWrite = {HiLoRead[63:32],A};
                ALUResult <= 0;
             end
             MTLO: begin
                 HiLoEn = 1;
-               // HiLoWrite[63:32] = HiLoRead[63:32];
-                HiLoWrite[31:0] <= A; 
+                HiLoWrite[31:0] = {HiLoRead[63:32],A}; 
                 ALUResult <= 0;
             end 
             default: begin
