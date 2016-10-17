@@ -195,7 +195,7 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                     ALUControl <= SLT;
                 end
                 ALUOP_SLTIU: begin
-                    ALUControl <= SLT;
+                    ALUControl <= SLTU;
                 end
                 ALUOP_MUL: begin
                     if(Funct == FC_mul) begin

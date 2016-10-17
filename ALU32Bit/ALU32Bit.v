@@ -86,7 +86,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                      MOVZ       = 'b01110,
                      SRLV       = 'b01111,
                      SRA        = 'b10000,
-                     SRAV       = 'b10001,
+                     SRAV       = 'b10001,       
                      SLTU       = 'b10010,
                      MUL        = 'b10011,
                      MADD       = 'b10100,
@@ -186,7 +186,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
             end
             SLTU: begin
                 RegWrite <= 1; // Write Concur
-                ALUResult = (A < B) ? (1):(0);
+                ALUResult = ($unsigned(A) < $unsigned(B)) ? (1):(0);
             end
             MOVN: begin
                 if(B != 0) begin
