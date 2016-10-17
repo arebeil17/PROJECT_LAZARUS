@@ -16,7 +16,7 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      ALUOP_ORI 		= 'b0011, // OR IMMEDIATE
                      ALUOP_ANDI 	= 'b0100, // AND IMMEDIATE (LW & SW TOO)
                      ALUOP_XORI 	= 'b0101, // XOR IMMEDIATE
-                     ALUOP_ORI 		= 'b0110, // NOR IMMDEIATE
+                     ALUOP_NORI 		= 'b0110, // NOR IMMDEIATE
                      ALUOP_ADDUI 	= 'b0111, // ADDU IMMEDIATE
                      ALUOP_SUBUI 	= 'b1000, // SUBU IMMEDIATE
                      ALUOP_MULTUI 	= 'b1001, // MULTU IMMDEDIATE
@@ -87,7 +87,7 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
 //    reg [5:0] Function = FC_add; //init to add
 
     always @(*) begin
-        if(AluOp == DC) begin //If its a dont care then function code is checked
+        if(AluOp == ALUOP_DC) begin //If its a dont care then function code is checked
             case(Funct)
                 FC_add: begin  //add
                     ALUControl <= ADD;

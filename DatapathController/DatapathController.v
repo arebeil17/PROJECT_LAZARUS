@@ -16,14 +16,15 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                      OP_001101 = 'b001101,  // ori
                      OP_001110 = 'b001110,  // xori
                      OP_001010 = 'b001010,  // slti
-                     OP_001011 = 'b001011;  // sltui
-                     OP_101011 = 'b101011;  // SW
-                     OP_100011 = 'b100011;	// LW
+                     OP_001011 = 'b001011,  // sltui
+                     OP_101011 = 'b101011,  // SW
+                     OP_100011 = 'b100011,	// LW
                      // NOT IMPLEMENTED YET...
-                     OP_101001 = 'b101001;	// SH
-                     OP_101000 = 'b101000;	// SB
-                     OP_100001 = 'b100001;	// LH
-                     OP_100000 = 'b100000;  // LB
+                     OP_101001 = 'b101001,	// SH
+                     OP_101000 = 'b101000,	// SB
+                     OP_100001 = 'b100001,	// LH
+                     OP_100000 = 'b100000,  // LB
+                     OP_000010 = 'b000010;  // J
      
     reg [5:0] State = INITIAL;
      
