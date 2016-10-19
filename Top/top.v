@@ -186,10 +186,6 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .In(IM_Out[25:0]),
         .Out(JumpShift_Out),
         .Shift(32'd2));
-    //Adder JA(
-    //    .InA(PCI_Out),
-    //    .InB(JumpShift_Out),
-    //    .Out(JA_Out));
     Adder BranchAdder(
         .InA(PCI_Out),
         .InB(BranchShift_Out),
