@@ -3,8 +3,8 @@
 module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, MemRead, Branch, MemToReg, SignExt, Jump, JumpMux);
     input[5:0] OpCode;
     
-    output reg RegWrite, AluSrc, MemWrite, MemRead, Branch, MemToReg, SignExt, Jump, JumpMux;
-    output reg [1:0] RegDst;
+    output reg RegWrite, AluSrc, MemWrite, MemRead, Branch, SignExt, Jump, JumpMux;
+    output reg [1:0] RegDst, MemToReg;
     output reg [3:0] AluOp;
     
     localparam [5:0] INITIAL = 'b111111,    // INITIAL
