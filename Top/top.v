@@ -12,7 +12,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     // Data Signals
     wire [31:0] IM_Out, // Ouput of IM
         SL_Out,         // Output of Shift Left
-        JIMux_Out,      // Output of Jump/Increment Mux
+        JIBMux_Out,      // Output of Jump/Increment Mux
         RF_RD1,         // Ouptut #1 of RF
         RF_RD2,         // Output #2 of RF
         RegDst_Out,     // Output of RegDstMux
@@ -26,7 +26,11 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         MemToReg_Out,   // Output
         RFAND_Out,      // Output of the RFAND
         AluOutReg,
-        PC_OutReg;
+        PC_OutReg,
+        JumpShift_Out,
+        BranchAdd_Out,
+        BranchShift_Out,
+        JumpMux_Out;
         
     wire ALU_Zero;      // Output of ALU Zero Flag
     
@@ -41,8 +45,10 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         MemToReg,           // MemToReg Mux Control
         RegWrite,           // Register File Write Control
         Branch,             // Branch Control
+        Jump,               // Jump Control
         SignExt,            // Sign Extend Control
-        JIMuxControl;       // PC Jump/Increment Mux Control
+        BranchAnd_Out,      // PC Jump/Increment Mux Control
+        JumpMuxControl;
     
     wire [4:0] ALUControl;  // ALU Controller to ALU Data
     wire [3:0] ALUOp;       // Controller to ALU Controller Data
@@ -98,11 +104,13 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .MemRead(MemRead),
         .Branch(Branch),
         .MemToReg(MemToReg),
-        .SignExt(SignExt));
+        .SignExt(SignExt),
+        .Jump(Jump),
+        .JumpMux(JumpMuxControl));
     
     // Data Path Components
     ProgramCounter PC(
-        .Address(JIMux_Out),
+        .Address(JIBMux_Out),
         .PC(PC_Out),
         .Reset(Rst),
         .Clk(ClkOut));  
@@ -170,22 +178,37 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .InA(PC_Out),
         .InB(32'd4),
         .Out(PCI_Out));
-    ShiftLeft SL(
+    ShiftLeft BranchShift(
         .In(SE_Out),
-        .Out(SL_Out),
+        .Out(BranchShift_Out),
         .Shift(32'd2));
-    Adder JA(
+    ShiftLeft JumpShift(
+        .In(IM_Out[25:0]),
+        .Out(JumpShift_Out),
+        .Shift(32'd2));
+    //Adder JA(
+    //    .InA(PCI_Out),
+    //    .InB(JumpShift_Out),
+    //    .Out(JA_Out));
+    Adder BranchAdder(
         .InA(PCI_Out),
-        .InB(SL_Out),
-        .Out(JA_Out));
-    AND JumpAnd(
+        .InB(BranchShift_Out),
+        .Out(BranchAdd_Out));
+    AND BranchAnd(
         .InA(ALU_Zero),
         .InB(Branch),
-        .Out(JIMuxControl));
-    Mux32Bit2To1 JIMux(
-        .Out(JIMux_Out),
+        .Out(BranchAnd_Out));
+    Mux32Bit2To1 JumpMux(
+        .In0({PCI_Out[31:28],JumpShift_Out[27:0]}),
+        .In1(RF_RD1),
+        .Out(JumpMux_Out),
+        .sel(JumpMuxControl));
+    Mux32Bit4To1 JIBMux(
+        .Out(JIBMux_Out),
         .In0(PCI_Out),
-        .In1(JA_Out),
-        .sel(JIMuxControl));
+        .In1(BranchAdd_Out),
+        .In2(JumpMux_Out),
+        .In3(32'b0),
+        .sel({Jump,BranchAnd_Out}));
         
 endmodule

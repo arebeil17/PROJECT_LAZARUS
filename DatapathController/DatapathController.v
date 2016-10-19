@@ -1,31 +1,37 @@
 `timescale 1ns / 1ps
 
-module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, MemRead, Branch, MemToReg, SignExt);
+module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, MemRead, Branch, MemToReg, SignExt, Jump, JumpMux);
     input[5:0] OpCode;
     
-    output reg RegDst, RegWrite, AluSrc, MemWrite, MemRead, Branch, MemToReg, SignExt;
+    output reg RegDst, RegWrite, AluSrc, MemWrite, MemRead, Branch, MemToReg, SignExt, Jump, JumpMux;
     output reg [3:0] AluOp;
     
     localparam [5:0] INITIAL = 'b111111,    // INITIAL
-                     OP_000000 = 'b000000,  // Most R-type Instructions
-                     OP_011100 = 'b011100,  // multiplies
-                     OP_011111 = 'b011111,  // seh & seb
-                     OP_001001 = 'b001001,  // addiu
-                     OP_001000 = 'b001000,  // addi
-                     OP_001100 = 'b001100,  // andi
-                     OP_001101 = 'b001101,  // ori
-                     OP_001110 = 'b001110,  // xori
-                     OP_001010 = 'b001010,  // slti
-                     OP_001011 = 'b001011,  // sltui
-                     OP_101011 = 'b101011,  // SW
-                     OP_100011 = 'b100011,	// LW
-                     // NOT IMPLEMENTED YET...
-                     OP_101001 = 'b101001,	// SH
-                     OP_101000 = 'b101000,	// SB
-                     OP_100001 = 'b100001,	// LH
-                     OP_100000 = 'b100000,  // LB
-                     OP_000010 = 'b000010;  // J
-     
+                    OP_000000 = 'b000000,   // Most R-type Instructions, JR
+                    OP_000001 = 'b000001,   // BGEZ, BLTZ
+                    OP_000010 = 'b000010,   // J - NOT IMPLEMENTED
+                    OP_000011 = 'b000011,   // JAL - NOT IMPLEMENTED
+                    OP_000100 = 'b000100,   // BEQ
+                    OP_000101 = 'b000101,   // BNE
+                    OP_000110 = 'b000110,   // BLEZ
+                    OP_000111 = 'b000111,   // BGTZ
+                    OP_001000 = 'b001000,   // ADDI
+                    OP_001001 = 'b001001,   // ADDIU
+                    OP_001010 = 'b001010,   // SLTI
+                    OP_001011 = 'b001011,   // SLTUI
+                    OP_001100 = 'b001100,   // ANDI
+                    OP_001101 = 'b001101,   // ORI
+                    OP_001110 = 'b001110,   // XORI
+                    OP_001111 = 'b001111,   // LUI
+                    OP_011100 = 'b011100,   // multiplies
+                    OP_011111 = 'b011111,   // SEB, SEH
+                    OP_100000 = 'b100000,   // LB - NOT IMPLEMENTED
+                    OP_100001 = 'b100001,	// LH - NOT IMPLEMENTED
+                    OP_100011 = 'b100011,	// LW
+                    OP_101000 = 'b101000,	// SB - NOT IMPLEMENTED
+                    OP_101001 = 'b101001,	// SH - NOT IMPLEMENTED
+                    OP_101011 = 'b101011;   // SW
+
     reg [5:0] State = INITIAL;
      
     //always @(change of any input)begin
@@ -35,113 +41,135 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 RegDst <= 0; RegWrite <= 0; AluSrc <= 0; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 0; SignExt <= 0; AluOp <= 'b0001;
+                Jump <= 0; JumpMux <= 0;
             end
-            OP_000000: begin // Most R-type Instructions
+            OP_000000: begin // Most R-type Instructions, (JR - NOT IMPLEMENTED)
                 RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 0; SignExt <= 1; AluOp <= 'b0000;
+                Jump <= 0; JumpMux <= 1;
             end
-            OP_000010: begin // J
+            OP_000001: begin // BGEZ, BLTZ - NOT IMPLEMENTED
+            end
+            OP_000010: begin // J - NOT IMPLEMENTED
+            end
+            OP_000011: begin // JAL - NOT IMPLEMENTED
+            end
+            OP_000100: begin // BEQ - NOT IMPLEMENTED
+            end
+            OP_000101: begin // BNE - NOT IMPLEMENTED
+            end
+            OP_000110: begin // BLEZ - NOT IMPLEMENTED
+            end
+            OP_000111: begin // BGTZ - NOT IMPLEMENTED
+            end
+            OP_000010: begin // J - NOT IMPLEMENTED
             	RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 0; SignExt <= 1; AluOp <= 'b0000;
-            end
-            OP_011100: begin
-                RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
-                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                MemToReg <= 0; SignExt <= 1; AluOp <= 'b1100;
-            end
-            OP_011111: begin // SEH & SEB
-                RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
-                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                MemToReg <= 0; SignExt <= 0; AluOp <= 'b1101;
-            end
-            OP_001001: begin // ADDIU
-                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
-                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                MemToReg <= 0; SignExt <= 0; AluOp <= 'b0111;
+                Jump <= 0; JumpMux <= 0;
             end
             OP_001000: begin // ADDI
                 RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 0; SignExt <= 1; AluOp <= 'b0001;
+                Jump <= 0; JumpMux <= 0;
             end
-            OP_001100: begin // ANDI
+            OP_001001: begin // ADDIU
                 RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0100;
+                MemToReg <= 0; SignExt <= 0; AluOp <= 'b0111;
+                Jump <= 0; JumpMux <= 0;
             end
-            OP_001101: begin // ORI
-                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
-                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0011;
-            end
-            OP_001110: begin // XORI
-                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
-                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0101;
-            end
-            /*OP_001110: begin // DUPLICATE
-                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
-                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0101;
-            end*/
             OP_001010: begin // SLTI
                 RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 0; SignExt <= 1; AluOp <= 'b1010;
+                Jump <= 0; JumpMux <= 0;
             end
             OP_001011: begin //SLTUI
                 RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 0; SignExt <= 1; AluOp <= 'b1011;
+                Jump <= 0; JumpMux <= 0;
+            end
+            OP_001100: begin // ANDI
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0100;
+                Jump <= 0; JumpMux <= 0;
+            end
+            OP_001101: begin // ORI
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0011;
+                Jump <= 0; JumpMux <= 0;
+            end
+            OP_001110: begin // XORI
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b0101;
+                Jump <= 0; JumpMux <= 0;
+            end
+            OP_001111: begin // LUI - NOT IMPLEMENTED
+            end
+            OP_011100: begin
+                RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 1; AluOp <= 'b1100;
+                Jump <= 0; JumpMux <= 0;
+            end
+            OP_011111: begin // SEH & SEB
+                RegDst <= 0; RegWrite <= 1; AluSrc <= 0; 
+                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
+                MemToReg <= 0; SignExt <= 0; AluOp <= 'b1101;
+                Jump <= 0; JumpMux <= 0;
+            end
+            // TODO: NEED TO FIND SOLUTION TO BE MEMORY READ/WRITE SAFE
+            OP_100000: begin // LB
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1;
+                MemWrite <= 0; MemRead <= 1; Branch <= 0;
+                MemToReg <= 1; SignExt <= 1; AluOp <= 'b0001; // Send ADDI to ALU Controller
+                Jump <= 0; JumpMux <= 0;
+            end
+            // TODO: NEED TO FIND SOLUTION TO BE MEMORY READ/WRITE SAFE
+            OP_100001: begin // LH
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1;
+                MemWrite <= 0; MemRead <= 1; Branch <= 0;
+                MemToReg <= 1; SignExt <= 1; AluOp <= 'b0001; // Send ADDI to ALU Controller
+                Jump <= 0; JumpMux <= 0;
+            end
+            OP_100011: begin // LW
+                RegDst <= 1; RegWrite <= 1; AluSrc <= 1;
+                MemWrite <= 0; MemRead <= 1; Branch <= 0;
+                MemToReg <= 1; SignExt <= 1; AluOp <= 'b0001; // Send ADDI to ALU Controller
+                Jump <= 0; JumpMux <= 0;
+            end
+            // TODO: NEED TO FIND SOLUTION TO BE MEMORY READ/WRITE SAFE
+            OP_101000: begin // SB
+                RegDst <= 1; RegWrite <= 0; AluSrc <= 1;
+                MemWrite <= 1; MemRead <= 0; Branch <= 0;
+                MemToReg <= 1; SignExt <= 1; AluOp <= 'b0001; // Send ADDI to ALU Controller
+                Jump <= 0; JumpMux <= 0;
+            end
+            // TODO: NEED TO FIND SOLUTION TO BE MEMORY READ/WRITE SAFE
+            OP_101001: begin // SH
+                RegDst <= 1; RegWrite <= 0; AluSrc <= 1;
+                MemWrite <= 1; MemRead <= 0; Branch <= 0;
+                MemToReg <= 1; SignExt <= 1; AluOp <= 'b0001; // Send ADDI to ALU Controller
+                Jump <= 0; JumpMux <= 0;
             end
             OP_101011: begin // SW
             	RegDst <= 1; RegWrite <= 0; AluSrc <= 1;
             	MemWrite <= 1; MemRead <= 0; Branch <= 0;
             	MemToReg <= 1; SignExt <= 1; AluOp <= 'b0001; // Send ADDI to ALU Controller
+            	Jump <= 0; JumpMux <= 0;
             end
-            OP_100011: begin // LW
-            	RegDst <= 1; RegWrite <= 1; AluSrc <= 1;
-            	MemWrite <= 0; MemRead <= 1; Branch <= 0;
-            	MemToReg <= 1; SignExt <= 1; AluOp <= 'b0001; // Send ADDI to ALU Controller
-            end
-            // NEED TO FIND SOLUTION TO BE MEMORY READ/WRITE SAFE
-            OP_101001: begin // SH
-            	RegDst <= 1; RegWrite <= 0; AluSrc <= 1;
-            	MemWrite <= 1; MemRead <= 0; Branch <= 0;
-            	MemToReg <= 1; SignExt <= 1; AluOp <= 'b0001; // Send ADDI to ALU Controller
-            end
-        	OP_101000: begin // SB
-        		RegDst <= 1; RegWrite <= 0; AluSrc <= 1;
-            	MemWrite <= 1; MemRead <= 0; Branch <= 0;
-            	MemToReg <= 1; SignExt <= 1; AluOp <= 'b0001; // Send ADDI to ALU Controller
-        	end
-            OP_100001: begin // LH
-            	RegDst <= 1; RegWrite <= 1; AluSrc <= 1;
-            	MemWrite <= 0; MemRead <= 1; Branch <= 0;
-            	MemToReg <= 1; SignExt <= 1; AluOp <= 'b0001; // Send ADDI to ALU Controller
-            end
-            OP_100000: begin // LB
-            	RegDst <= 1; RegWrite <= 1; AluSrc <= 1;
-            	MemWrite <= 0; MemRead <= 1; Branch <= 0;
-            	MemToReg <= 1; SignExt <= 1; AluOp <= 'b0001; // Send ADDI to ALU Controller
-            end
-            //default: begin
-            //    RegDst <= 0; RegWrite <= 0; AluSrc <= 0; 
-            //    MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-            //    MemToReg <= 0; SignExt <= 0; AluOp <= 'b0001;
-            //end
         endcase
      end
+     
       //State Register
      always @(OpCode) begin
-//        if(Rst == 1) begin
-//            State <= INITIAL;
-//        end    
-//        else begin
             State <= OpCode;
-//        end
-     end
-                 
+     end 
 endmodule
