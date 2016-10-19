@@ -15,7 +15,6 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         JIBMux_Out,      // Output of Jump/Increment Mux
         RF_RD1,         // Ouptut #1 of RF
         RF_RD2,         // Output #2 of RF
-        RegDst_Out,     // Output of RegDstMux
         ALUSrc_Out,     // Output of ALUSrcMux
         PC_Out,         // Output of ProgramCounter
         SE_Out,         // Output of SE
@@ -33,23 +32,23 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         JumpMux_Out;
         
     wire ALU_Zero;      // Output of ALU Zero Flag
+    wire [4:0] RegDst_Out;
     
     wire HiLoEn;
     wire [63:0] HiLoRead, HiLoWrite;
     
     // Control Signals
-    wire RegDst,            // RegDst Mux Control
+    wire //RegDst,            // RegDst Mux Control
         ALUSrc,             // ALUSrc Mux Contorl
         MemWrite,           // Data Memory Write Control
         MemRead,            // Data Memory Read Control
-        MemToReg,           // MemToReg Mux Control
         RegWrite,           // Register File Write Control
         Branch,             // Branch Control
         Jump,               // Jump Control
         SignExt,            // Sign Extend Control
         BranchAnd_Out,      // PC Jump/Increment Mux Control
         JumpMuxControl;
-    
+    wire [1:0] MemToReg, RegDst;
     wire [4:0] ALUControl;  // ALU Controller to ALU Data
     wire [3:0] ALUOp;       // Controller to ALU Controller Data
     
@@ -65,13 +64,11 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .NumberB(PC_OutReg), 
         .out7(out7), 
         .en_out(en_out));
-        
      Reg32 AluOutput(
         .Clk(ClkOut), 
         .Rst(Rst), 
         .data(ALU_Out), 
         .Output(AluOutReg));
-        
      Reg32 PCOutput(
         .Clk(ClkOut), 
         .Rst(Rst), 
@@ -94,7 +91,6 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .ALUControl(ALUControl));
         
     DatapathController Controller(
-        //.Rst(Rst),
         .OpCode(IM_Out[31:26]),
         .AluOp(ALUOp),
         .RegDst(RegDst),
@@ -117,11 +113,13 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     InstructionMemory IM(
         .Address(PC_Out),
         .Instruction(IM_Out));
-    Mux5bit_2to1 RegDstMux(
+    Mux32Bit4To1 RegDstMux(
         .In0(IM_Out[15:11]),
-        .In1(IM_Out[20:16]), 
-        .sel(RegDst), 
-        .Out(RegDst_Out[4:0]));
+        .In1(IM_Out[20:16]),
+        .In2(32'b11111),
+        .In3(32'b0),
+        .Out(RegDst_Out),
+        .sel(RegDst));
 	AND RF_AND(
 		.InA(RegWrite),
 		.InB(ALU_RegWrite),
@@ -167,10 +165,12 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .MemWrite(MemWrite),
         .MemRead(MemRead),
         .ReadData(DM_Out));
-    Mux32Bit2To1 MemToRegMux(
+    Mux32Bit4To1 MemToRegMux(
         .Out(MemToReg_Out),
         .In0(ALU_Out),
         .In1(DM_Out),
+        .In2(PCI_Out),
+        .In3(32'b0),
         .sel(MemToReg));
 
     // Program Counter Data Path
@@ -206,5 +206,4 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .In2(JumpMux_Out),
         .In3(32'b0),
         .sel({Jump,BranchAnd_Out}));
-        
 endmodule
