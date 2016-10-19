@@ -49,10 +49,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, 
-    WriteData, RegWrite, Clk, ReadData1, ReadData2);
+    WriteData, RegWrite, Clk, ReadData1, ReadData2, Reset);
     input [4:0] ReadRegister1, ReadRegister2, WriteRegister;
     input [31:0] WriteData;
-    input RegWrite;
+    input RegWrite, Reset;
     input Clk;
     
     output reg [31:0] ReadData1, ReadData2;
@@ -94,14 +94,51 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister,
 	   registers[31] = 32'b00000000000000000000000000000000;
 	end
 
+    always @(posedge Reset) begin
+        registers[0] =  32'b00000000000000000000000000000000;
+        registers[1] =  32'b00000000000000000000000000000001;
+        registers[2] =  32'b00000000000000000000000000000000;
+        registers[3] =  32'b00000000000000000000000000000000;
+        registers[4] =  32'b00000000000000000000000000000000;
+        registers[5] =  32'b00000000000000000000000000000000;
+        registers[6] =  32'b00000000000000000000000000000000;
+        registers[7] =  32'b00000000000000000000000000000000;
+        registers[8] =  32'b00000000000000000000000000000000;
+        registers[9] =  32'b00000000000000000000000000000000;
+        registers[10] = 32'b00000000000000000000000000000000;
+        registers[11] = 32'b00000000000000000000000000000000;
+        registers[12] = 32'b00000000000000000000000000000000;
+        registers[13] = 32'b00000000000000000000000000000000;
+        registers[14] = 32'b00000000000000000000000000000000;
+        registers[15] = 32'b00000000000000000000000000000000;
+        registers[16] = 32'b00000000000000000000000000000000;
+        registers[17] = 32'b00000000000000000000000000000000;
+        registers[18] = 32'b00000000000000000000000000000000;
+        registers[19] = 32'b00000000000000000000000000000000;
+        registers[20] = 32'b00000000000000000000000000000000;
+        registers[21] = 32'b00000000000000000000000000000000;
+        registers[22] = 32'b00000000000000000000000000000000;
+        registers[23] = 32'b00000000000000000000000000000000;
+        registers[24] = 32'b00000000000000000000000000000000;
+        registers[25] = 32'b00000000000000000000000000000000;
+        registers[26] = 32'b00000000000000000000000000000000;
+        registers[27] = 32'b00000000000000000000000000000000;
+        registers[28] = 32'b00000000000000000000000000000000;
+        registers[29] = 32'b00000000000000000000000000000000;
+        registers[30] = 32'b00000000000000000000000000000000;
+        registers[31] = 32'b00000000000000000000000000000000;
+    end
+
     always @(negedge Clk) begin
-        if(RegWrite == 1) begin
-            registers[WriteRegister] <= WriteData;
+        if(~Reset)begin
+            if(RegWrite)registers[WriteRegister] <= WriteData;
         end
     end
     //Should not be clocked  else will cause intermittent delays on reads
     always @(ReadRegister1, ReadRegister2) begin
-        ReadData1 <= registers[ReadRegister1];
-        ReadData2 <= registers[ReadRegister2];
+        if(~Reset) begin
+            ReadData1 <= registers[ReadRegister1];
+            ReadData2 <= registers[ReadRegister2];
+        end
     end
 endmodule

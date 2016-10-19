@@ -132,7 +132,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .RegWrite(RFAND_Out),
 		.Clk(ClkOut),
         .ReadData1(RF_RD1),
-        .ReadData2(RF_RD2));
+        .ReadData2(RF_RD2),
+        .Reset(Rst));
     SignExtension SE(
         .In(IM_Out[15:0]),
         .Out(SE_Out));
