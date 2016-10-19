@@ -10,36 +10,34 @@ module top(Clk, Rst, out7, en_out, ClkOut);
 
     input Clk, Rst;
     // Data Signals
-    wire [31:0] IM_Out, // Ouput of IM
-        SL_Out,         // Output of Shift Left
-        JIBMux_Out,      // Output of Jump/Increment Mux
-        RF_RD1,         // Ouptut #1 of RF
-        RF_RD2,         // Output #2 of RF
-        ALUSrc_Out,     // Output of ALUSrcMux
-        PC_Out,         // Output of ProgramCounter
-        SE_Out,         // Output of SE
-        ALU_Out,        // Output of ALU
-        DM_Out,         // Output of DM
-        PCI_Out,        // Output of PCI (PC Incrementer)
-        JA_Out,         // Output of JA (Jump Adder)
-        MemToReg_Out,   // Output
-        RFAND_Out,      // Output of the RFAND
-        AluOutReg,
-        PC_OutReg,
-        JumpShift_Out,
-        BranchAdd_Out,
-        BranchShift_Out,
-        JumpMux_Out;
-        
-    wire ALU_Zero;      // Output of ALU Zero Flag
-    wire [4:0] RegDst_Out;
-    
-    wire HiLoEn;
-    wire [63:0] HiLoRead, HiLoWrite;
+    wire [31:0] IM_Out, 	// Output of IM
+        SL_Out,         	// Output of Shift Left
+        JIBMux_Out,      	// Output of Jump/Increment Mux
+        RF_RD1,         	// Output #1 of RF
+        RF_RD2,         	// Output #2 of RF
+        ALUSrc_Out,     	// Output of ALUSrcMux
+        PC_Out,         	// Output of ProgramCounter
+        SE_Out,         	// Output of SE
+        ALU_Out,        	// Output of ALU
+        DM_Out,         	// Output of DM
+        PCI_Out,        	// Output of PCI (PC Incrementer)
+        JA_Out,         	// Output of JA (Jump Adder)
+        MemToReg_Out,   	// Output of MemToReg Mux
+        RFAND_Out,      	// Output of the RFAND
+        ALUReg_Out,			// Output of ALU Register
+        PCReg_Out,			// Output of PC Register
+        JumpShift_Out,		// Output of Jump Shifter
+        BranchAdd_Out,		// Output of Branch Adder
+        BranchShift_Out,	// Output of Branch Shifter
+        JumpMux_Out;		// Output of Jump Mux
+    wire ALU_Zero;      	// Output of ALU Zero Flag
+    wire [4:0] RegDst_Out;	// Output of RegDstMux
+    wire [63:0] HiLoRead, 	// Output of HiLoRead to ALU
+    	HiLoWrite;			// Output of ALU to HiLoRead
     
     // Control Signals
-    wire //RegDst,            // RegDst Mux Control
-        ALUSrc,             // ALUSrc Mux Contorl
+    wire HiLoEn,			// HiLo Register Write Enable
+        ALUSrc,             // ALUSrc Mux Control
         MemWrite,           // Data Memory Write Control
         MemRead,            // Data Memory Read Control
         RegWrite,           // Register File Write Control
@@ -47,33 +45,36 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         Jump,               // Jump Control
         SignExt,            // Sign Extend Control
         BranchAnd_Out,      // PC Jump/Increment Mux Control
-        JumpMuxControl;
-    wire [1:0] MemToReg, RegDst;
+        JumpMuxControl;		// Jump Mux Control
+    wire [1:0] MemToReg,	// MemToReg Mux Control
+    	RegDst;				// RegDst Mux Control
     wire [4:0] ALUControl;  // ALU Controller to ALU Data
     wire [3:0] ALUOp;       // Controller to ALU Controller Data
     
+    // Clocking Signals
     output wire ClkOut;
     
+    // Seven Segment Display Outputs
     output [6:0] out7; //seg a, b, ... g
     output [7:0] en_out;
     
-    // Output 8 x Seven Segment
+    // Output 8 x Seven Segment Display
     Two4DigitDisplay Display(
         .Clk(Clk), 
-        .NumberA(AluOutReg), 
-        .NumberB(PC_OutReg), 
+        .NumberA(ALUReg_Out), 
+        .NumberB(PCReg_Out), 
         .out7(out7), 
         .en_out(en_out));
-     Reg32 AluOutput(
+     Reg32 ALUReg(
         .Clk(ClkOut), 
         .Rst(Rst), 
         .data(ALU_Out), 
-        .Output(AluOutReg));
-     Reg32 PCOutput(
+        .Output(ALUReg_Out));
+     Reg32 PCReg(
         .Clk(ClkOut), 
         .Rst(Rst), 
         .data(PC_Out), 
-        .Output(PC_OutReg));
+        .Output(PCReg_Out));
     
     // Clock Divider
     Mod_Clk_Div MCD(
