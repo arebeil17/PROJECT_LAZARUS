@@ -44,13 +44,18 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 MemToReg <= 2'b00; SignExt <= 0; AluOp <= 'b0001;
                 Jump <= 0; JumpMux <= 0;
             end
-            OP_000000: begin // Most R-type Instructions, (JR - NOT IMPLEMENTED)
+            OP_000000: begin // Most R-type Instructions and JR
+                // TODO: JR Implementation, Can't set Jump <= 1 As PC+4 Does Not Get Written for all other commands
                 RegDst <= 2'b00; RegWrite <= 1; AluSrc <= 0; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b0000;
                 Jump <= 0; JumpMux <= 1;
             end
             OP_000001: begin // BGEZ, BLTZ - NOT IMPLEMENTED
+                RegDst <= 2'b11; RegWrite <= 0; AluSrc <= 1;
+                MemWrite <= 0; MemRead <= 0; Branch <= 1;
+                MemToReg <= 2'b11; SignExt <= 0; AluOp <= 'b????;
+                Jump <= 0; JumpMux <= 0;
             end
             OP_000010: begin // J - NOT IMPLEMENTED
                 RegDst <= 2'b00; RegWrite <= 0; AluSrc <= 0; 
@@ -65,12 +70,28 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 Jump <= 1; JumpMux <= 0;
             end
             OP_000100: begin // BEQ - NOT IMPLEMENTED
+                RegDst <= 2'b11; RegWrite <= 0; AluSrc <= 1;
+                MemWrite <= 0; MemRead <= 0; Branch <= 1;
+                MemToReg <= 2'b11; SignExt <= 0; AluOp <= 'b????;
+                Jump <= 0; JumpMux <= 0;
             end
             OP_000101: begin // BNE - NOT IMPLEMENTED
+                RegDst <= 2'b11; RegWrite <= 0; AluSrc <= 1;
+                MemWrite <= 0; MemRead <= 0; Branch <= 1;
+                MemToReg <= 2'b11; SignExt <= 0; AluOp <= 'b????;
+                Jump <= 0; JumpMux <= 0;
             end
             OP_000110: begin // BLEZ - NOT IMPLEMENTED
+                RegDst <= 2'b11; RegWrite <= 0; AluSrc <= 1;
+                MemWrite <= 0; MemRead <= 0; Branch <= 1;
+                MemToReg <= 2'b11; SignExt <= 0; AluOp <= 'b????;
+                Jump <= 0; JumpMux <= 0;
             end
             OP_000111: begin // BGTZ - NOT IMPLEMENTED
+                RegDst <= 2'b11; RegWrite <= 0; AluSrc <= 1;
+                MemWrite <= 0; MemRead <= 0; Branch <= 1;
+                MemToReg <= 2'b11; SignExt <= 0; AluOp <= 'b????;
+                Jump <= 0; JumpMux <= 0;
             end
             OP_000010: begin // J - NOT IMPLEMENTED
             	RegDst <= 2'b00; RegWrite <= 1; AluSrc <= 0; 
