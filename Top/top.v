@@ -78,7 +78,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     
     // Clock Divider
     Mod_Clk_Div MCD(
-        .In(4'b0001), // For Testing
+        .In(4'b1111), // For Testing
         //.In(4'b0000), // For Use 
         .Clk(Clk), 
         .Rst(Rst), 

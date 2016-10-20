@@ -48,7 +48,7 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 RegDst <= 2'b00; RegWrite <= 1; AluSrc <= 0; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b0000;
-                Jump <= 1; JumpMux <= 1;
+                Jump <= 0; JumpMux <= 1;
             end
             OP_000001: begin // BGEZ, BLTZ - NOT IMPLEMENTED
             end

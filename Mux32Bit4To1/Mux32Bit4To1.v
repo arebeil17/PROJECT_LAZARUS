@@ -16,12 +16,12 @@ module Mux32Bit4To1(Out, In0, In1, In2, In3, sel);
     input [31:0] In3;
     input [1:0]sel;
     
-    always @(sel) begin
+    always @(*) begin
         case(sel)
-            2'b00: Out <= In0;
-            2'b01: Out <= In1; 
-            2'b10: Out <= In2; 
-            2'b11: Out <= In3;
+            2'b00: Out = In0;
+            2'b01: Out = In1; 
+            2'b10: Out = In2; 
+            2'b11: Out = In3;
         endcase
     end
     //assign Out = (sel) ? (In1):(In0);
