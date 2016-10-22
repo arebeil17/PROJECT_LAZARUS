@@ -91,7 +91,8 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      EQ         = 'b011011, // BNE      | 11011
                      BLTZ_BGEZ  = 'b011100, // BLTZ_BGEZ     | 11100
                      BGTZ       = 'b011101, // BGTZ     | 11101
-                     BLEZ       = 'b011110; // BLEZ     | 11110
+                     BLEZ       = 'b011110, // BLEZ     | 11110
+                     JR         = 'b011111; // JR       |011111
 
                      
 //    reg [3:0] State = DC;        //init dont care
@@ -168,6 +169,9 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                 end
                 FC_mtlo: begin  // mtlo
                     ALUControl <= MTLO;
+                end
+                FC_jr: begin // jr
+                    ALUControl <= JR;
                 end 
                 default: begin
                     ALUControl <= ADD;

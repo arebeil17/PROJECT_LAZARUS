@@ -23,37 +23,38 @@
 // ALL PHASE 1 OPERATIONS ARE LISTED BELOW
 // Op   	| 'ALUControl value
 // ==========================
-// ADD  	| 00000
-// ADDU 	| 00001
-// SUB  	| 00010
-// MULT 	| 00011
-// MULTU	| 00100
-// AND  	| 00101
-// OR   	| 00110
-// NOR  	| 00111
-// XOR  	| 01000
-// SLL  	| 01001
-// SRL  	| 01010
-// SLLV 	| 01011
-// SLT  	| 01100
-// MOVN 	| 01101
-// MOVZ 	| 01110
-// ROTRV	| 01111
-// SRA  	| 10000
-// SRAV 	| 10001
-// SLTU 	| 10010
-// MUL  	| 10011
-// MADD 	| 10100
-// MSUB 	| 10101
-// SEH_SEB  | 10110
-// MFHI     | 10111
-// MFLO     | 11000
-// MTHI     | 11001
-// MTLO     | 11010
-// EQ       | 11011 ***USED FOR BNE 
-// BLTZ_BGEZ| 11100
-// BGTZ     | 11101
-// BLEZ     | 11110
+// ADD  	| 000000
+// ADDU 	| 000001
+// SUB  	| 000010
+// MULT 	| 000011
+// MULTU	| 000100
+// AND  	| 000101
+// OR   	| 000110
+// NOR  	| 000111
+// XOR  	| 001000
+// SLL  	| 001001
+// SRL  	| 001010
+// SLLV 	| 001011
+// SLT  	| 001100
+// MOVN 	| 001101
+// MOVZ 	| 001110
+// ROTRV	| 001111
+// SRA  	| 010000
+// SRAV 	| 010001
+// SLTU 	| 010010
+// MUL  	| 010011
+// MADD 	| 010100
+// MSUB 	| 010101
+// SEH_SEB  | 010110
+// MFHI     | 010111
+// MFLO     | 011000
+// MTHI     | 011001
+// MTLO     | 011010
+// EQ       | 011011 ***USED FOR BNE 
+// BLTZ_BGEZ| 011100
+// BGTZ     | 011101
+// BLEZ     | 011110
+// JR       | 011111
 // 
 // NOTE:-
 // SLT (i.e., set on less than): ALUResult is '32'h000000001' if A < B.
@@ -103,7 +104,8 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                      EQ         = 'b011011, // BNE      | 11011
                      BLTZ_BGEZ  = 'b011100, // BGEZ     | 11100
                      BGTZ       = 'b011101, // BGTZ     | 11101
-                     BLEZ       = 'b011110; // BLEZ     | 11110
+                     BLEZ       = 'b011110, // BLEZ     | 11110
+                     JR         = 'b011111; // JR       |011111
     
     reg [5:0] Operation;
     reg [31:0] temp_1 = 0, temp_2 = 0;
@@ -313,6 +315,9 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                     ALUResult <= 0;  //Branch triggered by Zero output
                 else
                     ALUResult <= 1;  //Branch triggered by Zero output
+            end
+            JR: begin
+                ALUResult <= 0;
             end
             default: begin
             	RegWrite <= 0; // Write NOT Concur

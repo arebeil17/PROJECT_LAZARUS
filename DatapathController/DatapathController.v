@@ -66,7 +66,7 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
             OP_000011: begin // JAL - NOT IMPLEMENTED
                 RegDst <= 2'b10; RegWrite <= 0; AluSrc <= 0; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                MemToReg <= 2'b10; SignExt <= 1; AluOp <= 'b????;
+                MemToReg <= 2'b10; SignExt <= 1; AluOp <= 'b00000;
                 Jump <= 1; JumpMux <= 0;
             end
             OP_000100: begin // BEQ
@@ -91,12 +91,6 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 0;
                 MemWrite <= 0; MemRead <= 0; Branch <= 1;
                 MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b10001;
-                Jump <= 0; JumpMux <= 0;
-            end
-            OP_000010: begin // J
-            	RegDst <= 2'b00; RegWrite <= 1; AluSrc <= 0; 
-                MemWrite <= 0; MemRead <= 0; Branch <= 0; 
-                MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b00000;
                 Jump <= 0; JumpMux <= 0;
             end
             OP_001000: begin // ADDI
