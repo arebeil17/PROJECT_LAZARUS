@@ -83,7 +83,8 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      MFHI = 'b10111, // MFHI     | 10111
                      MFLO = 'b11000, // MFLO     | 11000
                      MTHI = 'b11001, // MTHI     | 11001
-                     MTLO = 'b11010; // MTLO     | 11010
+                     MTLO = 'b11010, // MTLO     | 11010
+                     EQ =  'b11011;  // BNE      / 11011
                      
 //    reg [3:0] State = DC;        //init dont care
 //    reg [5:0] Function = FC_add; //init to add
@@ -218,6 +219,9 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                 end
                 ALUOP_BEQ: begin
                     ALUControl <= SUB;
+                end
+                ALUOP_BNE: begin
+                    ALUControl <= EQ;
                 end
                 //default: begin
                 //    ALUControl <= ADD;

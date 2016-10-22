@@ -50,6 +50,7 @@
 // MFLO     | 11000
 // MTHI     | 11001
 // MTLO     | 11010
+// EQ       | 11011 ***USED FOR BNE 
 // 
 // NOTE:-
 // SLT (i.e., set on less than): ALUResult is '32'h000000001' if A < B.
@@ -95,7 +96,8 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                      MFHI       = 'b10111, // MFHI     | 10111
                      MFLO       = 'b11000, // MFLO     | 11000
                      MTHI       = 'b11001, // MTHI     | 11001
-                     MTLO       = 'b11010; // MTLO     | 11010
+                     MTLO       = 'b11010, // MTLO     | 11010
+                     EQ         = 'b11011; //BNE       | 11011
     
     reg [4:0] Operation;
     reg [31:0] temp_1 = 0, temp_2 = 0;
@@ -273,6 +275,13 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 HiLoWrite[31:0] = {HiLoRead[63:32],A}; 
                 ALUResult <= 0;
             end 
+            EQ: begin //Checks if A and B are equal
+                RegWrite <= 0;
+                if(A != B)
+                    ALUResult <= 0;
+                else
+                    ALUResult <= 1;
+            end
             default: begin
             	RegWrite <= 0; // Write NOT Concur
                 ALUResult <= 0;

@@ -76,9 +76,9 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 Jump <= 0; JumpMux <= 0;
             end
             OP_000101: begin // BNE - NOT IMPLEMENTED
-                RegDst <= 2'b11; RegWrite <= 0; AluSrc <= 1;
+                RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 0;
                 MemWrite <= 0; MemRead <= 0; Branch <= 1;
-                MemToReg <= 2'b11; SignExt <= 0; AluOp <= 'b????;
+                MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b1111;
                 Jump <= 0; JumpMux <= 0;
             end
             OP_000110: begin // BLEZ - NOT IMPLEMENTED
