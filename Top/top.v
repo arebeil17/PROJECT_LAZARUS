@@ -49,8 +49,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         BranchAnd_Out,      // PC Jump/Increment Mux Control
         JumpMuxControl;
     wire [1:0] MemToReg, RegDst;
-    wire [4:0] ALUControl;  // ALU Controller to ALU Data
-    wire [3:0] ALUOp;       // Controller to ALU Controller Data
+    wire [5:0] ALUControl;  // ALU Controller to ALU Data
+    wire [4:0] ALUOp;       // Controller to ALU Controller Data
     
     output wire ClkOut;
     

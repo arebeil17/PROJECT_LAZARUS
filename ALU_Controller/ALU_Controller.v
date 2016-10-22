@@ -3,29 +3,32 @@
 module ALU_Controller(Rst, AluOp, Funct, ALUControl);
 
     input Rst;
-    input [3:0] AluOp;           //4 bit AluOp code sent from controller 
+    input [4:0] AluOp;           //5 bit AluOp code sent from controller 
     
     input [5:0] Funct;           //6 bit Instruction function field
     
-    output reg [4:0] ALUControl; //4 bit output control signal sent to ALU
+    output reg [5:0] ALUControl; //6 bit output control signal sent to ALU
     
-    //Controller AluOp 4 bit inputs (also are the state encodings)
-    localparam [3:0] ALUOP_DC 		= 'b0000, // DONT CARE
-                     ALUOP_ADDI 	= 'b0001, // ADD IMMEDIATE
-                     ALUOP_SUBI 	= 'b0010, // SUB IMMEDIATE
-                     ALUOP_ORI 		= 'b0011, // OR IMMEDIATE
-                     ALUOP_ANDI 	= 'b0100, // AND IMMEDIATE (LW & SW TOO)
-                     ALUOP_XORI 	= 'b0101, // XOR IMMEDIATE
-                     ALUOP_NORI 	= 'b0110, // NOR IMMDEIATE
-                     ALUOP_ADDUI 	= 'b0111, // ADDU IMMEDIATE
-                     ALUOP_SUBUI 	= 'b1000, // SUBU IMMEDIATE
-                     ALUOP_MULTUI 	= 'b1001, // MULTU IMMDEDIATE
-                     ALUOP_SLTI 	= 'b1010, // SLT IMMEDIATE
-                     ALUOP_SLTIU 	= 'b1011, // SLTU IMMEDIATE
-                     ALUOP_MUL		= 'b1100, // ALL MULTIPLY OPERATIONS
-                     ALUOP_SE 		= 'b1101, // SIGN EXTEND OPERATIONS
-                     ALUOP_BEQ      = 'b1110, // BEQ
-                     ALUOP_BNE      = 'b1111; // BNE
+    //Controller AluOp 5 bit inputs (also are the state encodings)
+    localparam [4:0] ALUOP_DC 		= 'b00000, // DONT CARE
+                     ALUOP_ADDI 	= 'b00001, // ADD IMMEDIATE
+                     ALUOP_SUBI 	= 'b00010, // SUB IMMEDIATE
+                     ALUOP_ORI 		= 'b00011, // OR IMMEDIATE
+                     ALUOP_ANDI 	= 'b00100, // AND IMMEDIATE (LW & SW TOO)
+                     ALUOP_XORI 	= 'b00101, // XOR IMMEDIATE
+                     ALUOP_NORI 	= 'b00110, // NOR IMMDEIATE
+                     ALUOP_ADDUI 	= 'b00111, // ADDU IMMEDIATE
+                     ALUOP_SUBUI 	= 'b01000, // SUBU IMMEDIATE
+                     ALUOP_MULTUI 	= 'b01001, // MULTU IMMDEDIATE
+                     ALUOP_SLTI 	= 'b01010, // SLT IMMEDIATE
+                     ALUOP_SLTIU 	= 'b01011, // SLTU IMMEDIATE
+                     ALUOP_MUL		= 'b01100, // ALL MULTIPLY OPERATIONS
+                     ALUOP_SE 		= 'b01101, // SIGN EXTEND OPERATIONS
+                     ALUOP_BEQ      = 'b01110, // BEQ
+                     ALUOP_BNE      = 'b01111, // BNE
+                     ALUOP_BLTZ_BGEZ= 'b10000, // BGEZ
+                     ALUOP_BGTZ     = 'b10001, // BGTZ
+                     ALUOP_BLEZ     = 'b10010; // BLEZ
     				 
     //Instruction Function code 6 bit input definitions
     //---------------Dont Care FUNCTION FIELDS                
@@ -51,40 +54,45 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      FC_mul  	=  'b000010,  	// mul
                      FC_madd 	=  'b000000,  	// madd
                      FC_msub 	=  'b000100,  	// msub
-                     FC_mfhi 	= 	'b010000, 	// mfhi
-                     FC_mflo 	= 	'b010010, 	// mflo
-                     FC_mthi 	= 	'b010001, 	// mthi
-                     FC_mtlo 	= 	'b010011; 	// mtlo                
+                     FC_mfhi 	=  'b010000, 	// mfhi
+                     FC_mflo 	=  'b010010, 	// mflo
+                     FC_mthi 	=  'b010001, 	// mthi
+                     FC_mtlo 	=  'b010011, 	// mtlo
+                     FC_jr      =  'b001000;    // jr                
      
-     //ALU control 5 bit output definitions                
-    localparam [4:0] ADD  = 'b00000, // ADD  	 | 00000
-                     ADDU = 'b00001, // ADDU     | 00001
-                     SUB  = 'b00010, // SUB      | 00010
-                     MULT = 'b00011, // MULT     | 00011
-                     MULTU= 'b00100, // MULTU    | 00100
-                     AND  = 'b00101, // AND      | 00101
-                     OR   = 'b00110, // OR       | 00110
-                     NOR  = 'b00111, // NOR      | 00111
-                     XOR  = 'b01000, // XOR      | 01000
-                     SLL  = 'b01001, // SLL      | 01001
-                     SRL  = 'b01010, // SRL      | 01010
-                     SLLV = 'b01011, // SLLV     | 01011
-                     SLT  = 'b01100, // SLT      | 01100
-                     MOVN = 'b01101, // MOVN     | 01101
-                     MOVZ = 'b01110, // MOVZ     | 01110
-                     SRLV = 'b01111, // ROTRV    | 01111
-                     SRA  = 'b10000, // SRA      | 10000
-                     SRAV = 'b10001, // SRAV     | 10001
-                     SLTU = 'b10010, // SLTU     | 10010
-                     MUL  = 'b10011, // MUL      | 10011
-                     MADD = 'b10100, // MADD     | 10100
-                     MSUB = 'b10101, // MSUB     | 10101
-                     SE = 'b10110,// SEH_SEB | 10110
-                     MFHI = 'b10111, // MFHI     | 10111
-                     MFLO = 'b11000, // MFLO     | 11000
-                     MTHI = 'b11001, // MTHI     | 11001
-                     MTLO = 'b11010, // MTLO     | 11010
-                     EQ =  'b11011;  // BNE      / 11011
+     //ALU control 6 bit output definitions                
+    localparam [5:0] ADD        = 'b000000, // ADD  	 | 00000
+                     ADDU       = 'b000001, // ADDU     | 00001
+                     SUB        = 'b000010, // SUB      | 00010
+                     MULT       = 'b000011, // MULT     | 00011
+                     MULTU      = 'b000100, // MULTU    | 00100
+                     AND        = 'b000101, // AND      | 00101
+                     OR         = 'b000110, // OR       | 00110
+                     NOR        = 'b000111, // NOR      | 00111
+                     XOR        = 'b001000, // XOR      | 01000
+                     SLL        = 'b001001, // SLL      | 01001
+                     SRL        = 'b001010, // SRL      | 01010
+                     SLLV       = 'b001011, // SLLV     | 01011
+                     SLT        = 'b001100, // SLT      | 01100
+                     MOVN       = 'b001101, // MOVN     | 01101
+                     MOVZ       = 'b001110, // MOVZ     | 01110
+                     SRLV       = 'b001111, // ROTRV    | 01111
+                     SRA        = 'b010000, // SRA      | 10000
+                     SRAV       = 'b010001, // SRAV     | 10001
+                     SLTU       = 'b010010, // SLTU     | 10010
+                     MUL        = 'b010011, // MUL      | 10011
+                     MADD       = 'b010100, // MADD     | 10100
+                     MSUB       = 'b010101, // MSUB     | 10101
+                     SE         = 'b010110, // SEH_SEB  | 10110
+                     MFHI       = 'b010111, // MFHI     | 10111
+                     MFLO       = 'b011000, // MFLO     | 11000
+                     MTHI       = 'b011001, // MTHI     | 11001
+                     MTLO       = 'b011010, // MTLO     | 11010
+                     EQ         = 'b011011, // BNE      | 11011
+                     BLTZ_BGEZ  = 'b011100, // BLTZ_BGEZ     | 11100
+                     BGTZ       = 'b011101, // BGTZ     | 11101
+                     BLEZ       = 'b011110; // BLEZ     | 11110
+
                      
 //    reg [3:0] State = DC;        //init dont care
 //    reg [5:0] Function = FC_add; //init to add
@@ -222,6 +230,15 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                 end
                 ALUOP_BNE: begin
                     ALUControl <= EQ;
+                end
+                ALUOP_BLTZ_BGEZ: begin // BGEZ
+                    ALUControl <= BLTZ_BGEZ;
+                end
+                ALUOP_BGTZ: begin // BGTZ
+                    ALUControl <= BGTZ;
+                end
+                ALUOP_BLEZ: begin // BLEZ
+                    ALUControl <= BLEZ;
                 end
                 //default: begin
                 //    ALUControl <= ADD;

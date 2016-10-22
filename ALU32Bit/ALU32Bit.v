@@ -51,6 +51,9 @@
 // MTHI     | 11001
 // MTLO     | 11010
 // EQ       | 11011 ***USED FOR BNE 
+// BLTZ_BGEZ| 11100
+// BGTZ     | 11101
+// BLEZ     | 11110
 // 
 // NOTE:-
 // SLT (i.e., set on less than): ALUResult is '32'h000000001' if A < B.
@@ -59,7 +62,7 @@
 
 module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiLoRead, RegWrite);
 
-	input [4:0] ALUControl; // control bits for ALU operation
+	input [5:0] ALUControl; // control bits for ALU operation
 	input [31:0] A, B;	    // inputs
 	input [4:0] Shamt;       //21bit from instruction used for selecting ROTR or SRL
     input [63:0] HiLoRead;
@@ -70,36 +73,39 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
 	output reg [31:0] ALUResult;	// answer
 	output Zero;	    // Zero=1 if ALUResult == 0
        
-    localparam [4:0] ADD        = 'b00000,
-                     ADDU       = 'b00001,
-                     SUB        = 'b00010,
-                     MULT       = 'b00011,
-                     MULTU      = 'b00100,
-                     AND        = 'b00101,
-                     OR         = 'b00110,
-                     NOR        = 'b00111,
-                     XOR        = 'b01000,
-                     SLL        = 'b01001,
-                     SRL        = 'b01010,
-                     SLLV       = 'b01011,
-                     SLT        = 'b01100,
-                     MOVN       = 'b01101,
-                     MOVZ       = 'b01110,
-                     SRLV       = 'b01111,
-                     SRA        = 'b10000,
-                     SRAV       = 'b10001,       
-                     SLTU       = 'b10010,
-                     MUL        = 'b10011,
-                     MADD       = 'b10100,
-                     MSUB       = 'b10101,
-                     SEH_SEB    = 'b10110,
-                     MFHI       = 'b10111, // MFHI     | 10111
-                     MFLO       = 'b11000, // MFLO     | 11000
-                     MTHI       = 'b11001, // MTHI     | 11001
-                     MTLO       = 'b11010, // MTLO     | 11010
-                     EQ         = 'b11011; //BNE       | 11011
+    localparam [5:0] ADD        = 'b000000,
+                     ADDU       = 'b000001,
+                     SUB        = 'b000010,
+                     MULT       = 'b000011,
+                     MULTU      = 'b000100,
+                     AND        = 'b000101,
+                     OR         = 'b000110,
+                     NOR        = 'b000111,
+                     XOR        = 'b001000,
+                     SLL        = 'b001001,
+                     SRL        = 'b001010,
+                     SLLV       = 'b001011,
+                     SLT        = 'b001100,
+                     MOVN       = 'b001101,
+                     MOVZ       = 'b001110,
+                     SRLV       = 'b001111,
+                     SRA        = 'b010000,
+                     SRAV       = 'b010001,       
+                     SLTU       = 'b010010,
+                     MUL        = 'b010011,
+                     MADD       = 'b010100,
+                     MSUB       = 'b010101,
+                     SEH_SEB    = 'b010110,
+                     MFHI       = 'b010111, // MFHI     | 10111
+                     MFLO       = 'b011000, // MFLO     | 11000
+                     MTHI       = 'b011001, // MTHI     | 11001
+                     MTLO       = 'b011010, // MTLO     | 11010
+                     EQ         = 'b011011, // BNE      | 11011
+                     BLTZ_BGEZ  = 'b011100, // BGEZ     | 11100
+                     BGTZ       = 'b011101, // BGTZ     | 11101
+                     BLEZ       = 'b011110; // BLEZ     | 11110
     
-    reg [4:0] Operation;
+    reg [5:0] Operation;
     reg [31:0] temp_1 = 0, temp_2 = 0;
     reg [63:0] temp64 = 0;
     
@@ -281,6 +287,32 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                     ALUResult <= 0;
                 else
                     ALUResult <= 1;
+            end
+            BLTZ_BGEZ: begin
+                if(B == 0) begin //Perform BLTZ if rt = 0
+                    if( A < 0)
+                        ALUResult <= 0;  //Branch triggered by Zero output
+                    else
+                        ALUResult <= 1;
+                end
+                else begin //else perform BGEZ if rt = 1
+                      if( A >= 0)
+                          ALUResult <= 0; //Branch triggered by Zero output
+                      else
+                          ALUResult <= 1;
+                end
+            end
+            BGTZ: begin
+                if( A > 0) //If rs is greater than zero branch
+                    ALUResult <= 0;  //Branch triggered by Zero output
+                else
+                    ALUResult <= 1;  //Branch triggered by Zero output
+            end
+            BLEZ: begin
+                if( A < 0) //If rs is less than zero branch
+                    ALUResult <= 0;  //Branch triggered by Zero output
+                else
+                    ALUResult <= 1;  //Branch triggered by Zero output
             end
             default: begin
             	RegWrite <= 0; // Write NOT Concur
