@@ -35,31 +35,83 @@
 // of the "Address" input to index any of the 256 words. 
 ////////////////////////////////////////////////////////////////////////////////
 
-module DataMemory(Address, WriteData, Clk, MemWrite, MemRead, ReadData); 
+module DataMemory(Address, WriteData, ByteSel, Clk, MemWrite, MemRead, ReadData); 
 
     input [31:0] Address; 	// Input Address 
     input [31:0] WriteData; // Data that needs to be written into the address 
     input Clk;              // Clock Signal
     input MemWrite; 		// Control signal for memory write 
     input MemRead; 			// Control signal for memory read 
-
+    input [1:0] ByteSel;    // 00 for SW/LW 
+                            // 01 for byte select
+                            // 11 for half word
+    
+    
     output reg [31:0] ReadData; // Contents of memory location at Address
 
-    reg [8:0] memory [0:1023];
-
+    reg [31:0] memory [0:255]; // 256 32 bit registers
+    
+    //reg [31:0] temp; //temp for  byte addressing 
+    
     initial begin
-        
+        //initialize memory
     end
 
     always @(posedge Clk) begin
         if(MemWrite == 1) begin
-            memory[Address[11:2]] <= WriteData;
+            if(ByteSel == 'b00) begin
+                if(Address[1:0] == 'b00) //These byte indexing bits must be 00 for sw
+                    memory[Address[9:2]] <= WriteData;
+                    
+            end else if(ByteSel == 'b01) begin    //for sb
+                if(Address[1:0] == 'b00) //Index byte 0
+                    memory[Address[9:2]][7:0] <= WriteData;
+                    
+                else if(Address[1:0] == 'b01) //Index byte 1
+                    memory[Address[9:2]][15:8] <= WriteData;
+                    
+                else if(Address[1:0] == 'b10) //Index byte 2
+                    memory[Address[9:2]][23:16] <= WriteData;
+                    
+                else if(Address[1:0] == 'b11) //Index byte 3
+                    memory[Address[9:2]][31:24] <= WriteData;
+                    
+            end else if(ByteSel == 'b11) begin //for store half word
+                if(Address[1:0] == 'b00)      //Index word 1
+                    memory[Address[9:2]][15:0] <= WriteData;
+                    
+                else if(Address[1:0] == 'b10) // Index word 2
+                    memory[Address[9:2]][31:16] <= WriteData; 
+            end
         end
     end
     
     always @(negedge Clk) begin
         if(MemRead == 1) begin
-            ReadData <= memory[Address[11:2]];
+            if(ByteSel == 'b00) begin
+                if(Address[1:0] == 'b00) //These byte indexing bits must be 00 for lw
+                    ReadData <= memory[Address[9:2]];
+                    
+            end else if(ByteSel == 'b01) begin //for lb
+                if(Address[1:0] == 'b00) //Index byte 0
+                    ReadData <= memory[Address[9:2]][7:0];
+                    
+                else if(Address[1:0] == 'b01) //Index byte 1
+                    ReadData <= memory[Address[9:2]][15:8];
+                    
+                else if(Address[1:0] == 'b10) //Index byte 2
+                    ReadData <= memory[Address[9:2]][23:16];
+                    
+                else if(Address[1:0] == 'b11) //Index byte 3
+                    ReadData <= memory[Address[9:2]][31:24];
+                    
+            end else if(ByteSel == 'b11) begin //for load half-word
+                if(Address[1:0] == 'b00)      //Index word 1
+                    ReadData <= memory[Address[9:2]][15:0];
+                    
+                else if(Address[1:0] == 'b10) // Index word 2
+                    ReadData <= memory[Address[9:2]][31:16]; 
+            end
         end else begin
             ReadData <= 32'd0;
         end

@@ -1,17 +1,19 @@
 `timescale 1ns / 1ps
 
-module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, MemRead, Branch, MemToReg, SignExt, Jump, JumpMux);
+module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, MemRead, Branch, MemToReg, SignExt, Jump, JumpMux, ByteSel);
     input[5:0] OpCode;
     
     output reg RegWrite, AluSrc, MemWrite, MemRead, Branch, SignExt, Jump, JumpMux;
     output reg [1:0] RegDst, MemToReg;
     output reg [4:0] AluOp;
-    
+    output reg [1:0] ByteSel; //Check in DM for info
+                              //Update control signals in all states to include byte sel  
+                            
     localparam [5:0] INITIAL = 'b111111,    // INITIAL
                     OP_000000 = 'b000000,   // Most R-type Instructions, JR
                     OP_000001 = 'b000001,   // BGEZ, BLTZ
                     OP_000010 = 'b000010,   // J
-                    OP_000011 = 'b000011,   // JAL - NOT IMPLEMENTED
+                    OP_000011 = 'b000011,   // JAL - UNTESTED
                     OP_000100 = 'b000100,   // BEQ
                     OP_000101 = 'b000101,   // BNE
                     OP_000110 = 'b000110,   // BLEZ 

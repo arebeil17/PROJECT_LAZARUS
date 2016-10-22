@@ -34,6 +34,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     wire ALU_Zero;      // Output of ALU Zero Flag
     wire [4:0] RegDst_Out;
     
+    wire [1:0] ByteSel;
+    
     wire HiLoEn;
     wire [63:0] HiLoRead, HiLoWrite;
     
@@ -102,7 +104,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .MemToReg(MemToReg),
         .SignExt(SignExt),
         .Jump(Jump),
-        .JumpMux(JumpMuxControl));
+        .JumpMux(JumpMuxControl),
+        .ByteSel(ByteSel));
     
     // Data Path Components
     ProgramCounter PC(
@@ -162,6 +165,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     DataMemory DM(
         .Address(ALU_Out),
         .WriteData(RF_RD2),
+        .ByteSel(ByteSel),
         .Clk(ClkOut),
         .MemWrite(MemWrite),
         .MemRead(MemRead),
