@@ -38,32 +38,28 @@
 module DataMemory(Address, WriteData, ByteSel, Clk, MemWrite, MemRead, ReadData); 
 
     input [31:0] Address; 	// Input Address 
-    input [31:0] WriteData; // Data that needs to be written into the address 
+    input [31:0] WriteData; // Data to be Written into the Address 
     input Clk;              // Clock Signal
-    input MemWrite; 		// Control signal for memory write 
-    input MemRead; 			// Control signal for memory read 
+    input MemWrite; 		// Control Signal for Memory Write 
+    input MemRead; 			// Control Signal for Memory Read 
     input [1:0] ByteSel;    // 00 for SW/LW 
-                            // 01 for byte select
-                            // 11 for half word
-    
+                            // 01 for Byte Select
+                            // 11 for Half Word
     
     output reg [31:0] ReadData; // Contents of memory location at Address
 
-    reg [31:0] memory [0:255]; // 256 32 bit registers
-    
-    //reg [31:0] temp; //temp for  byte addressing 
+    reg [31:0] memory [0:255]; // 256x32 Registers
     
     initial begin
-        //initialize memory
     end
 
     always @(posedge Clk) begin
         if(MemWrite == 1) begin
-            if(ByteSel == 'b00) begin
+            if(ByteSel == 'b00) begin // For LW
                 if(Address[1:0] == 'b00) //These byte indexing bits must be 00 for sw
                     memory[Address[9:2]] <= WriteData;
                     
-            end else if(ByteSel == 'b01) begin    //for sb
+            end else if(ByteSel == 'b01) begin  // For SB
                 if(Address[1:0] == 'b00) //Index byte 0
                     memory[Address[9:2]][7:0] <= WriteData;
                     
