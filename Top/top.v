@@ -175,7 +175,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .sel(MemToReg));
 
     // Program Counter Data Path
-    Adder PCI(
+    Adder PC_ADDER(
         .InA(PC_Out),
         .InB(32'd4),
         .Out(PCI_Out));

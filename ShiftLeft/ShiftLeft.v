@@ -25,5 +25,5 @@ module ShiftLeft(In, Out, Shift);
     input [4:0] Shift;
     output [31:0] Out;
     
-    assign Out = In << Shift;
+    assign Out = In <<< Shift;
 endmodule

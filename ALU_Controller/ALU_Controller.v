@@ -23,7 +23,9 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      ALUOP_SLTI 	= 'b1010, // SLT IMMEDIATE
                      ALUOP_SLTIU 	= 'b1011, // SLTU IMMEDIATE
                      ALUOP_MUL		= 'b1100, // ALL MULTIPLY OPERATIONS
-                     ALUOP_SE 		= 'b1101; // SIGN EXTEND OPERATIONS
+                     ALUOP_SE 		= 'b1101, // SIGN EXTEND OPERATIONS
+                     ALUOP_BEQ      = 'b1110, // BEQ
+                     ALUOP_BNE      = 'b1111; // BNE
     				 
     //Instruction Function code 6 bit input definitions
     //---------------Dont Care FUNCTION FIELDS                
@@ -214,10 +216,13 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                 ALUOP_SE: begin
                     ALUControl <= SE;
                 end
+                ALUOP_BEQ: begin
+                    ALUControl <= SUB;
+                end
                 //default: begin
                 //    ALUControl <= ADD;
                 //end
             endcase
-        end // End Else
+        end 
     end
 endmodule
