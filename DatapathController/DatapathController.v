@@ -64,7 +64,7 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 Jump <= 1; JumpMux <= 0;
             end
             OP_000011: begin // JAL - NOT IMPLEMENTED
-                RegDst <= 2'b10; RegWrite <= 0; AluSrc <= 0; 
+                RegDst <= 2'b10; RegWrite <= 1; AluSrc <= 0; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 2'b10; SignExt <= 1; AluOp <= 'b00000;
                 Jump <= 1; JumpMux <= 0;

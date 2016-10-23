@@ -68,10 +68,10 @@ module InstructionMemory(Address, Instruction);
         memory[19] = 32'b00000101011000010000000000000010;    //    loop3:    bgez    $t3, loop4
         memory[20] = 32'b00100001011010110000000000000010;    //        addi    $t3, $t1, 2
         memory[21] = 32'b00001000000000000000000000010011;    //        j    loop3
-        memory[22] = 32'b00011101100000000000000000101010;    //    loop4:    bgtz    $at, $zero, $t4
+        memory[22] = 32'b00011101100000000000000000000010;    //    loop4:    bgtz    $at, $zero, $t4
         memory[23] = 32'b00100001100011000000000000000010;    //        addi    $t4, $t4, 2
         memory[24] = 32'b00001000000000000000000000010110;    //        j    loop4
-        memory[25] = 32'b00001000000000000000000000000000;    //    end:    j    main
+        memory[25] = 32'b00001100000000000000000000000000;    //    end:    jal    0
     end
 
     assign Instruction = memory[Address[31:2]];
