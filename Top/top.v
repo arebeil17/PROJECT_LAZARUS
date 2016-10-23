@@ -59,13 +59,19 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     
     output wire ClkOut;
     
+    reg RegWriteOut;
+    
+    always @(negedge ClkOut) begin
+        RegWriteOut <= RegWrite;
+    end
+    
     output [6:0] out7; //seg a, b, ... g
     output [7:0] en_out;
     
     // Output 8 x Seven Segment
     Two4DigitDisplay Display(
         .Clk(Clk),
-        .RegWrite(RegWrite), 
+        .RegWrite(RegWriteOut), 
         .NumberA(WriteOutReg), 
         .NumberB(PC_OutReg), 
         .out7(out7), 
