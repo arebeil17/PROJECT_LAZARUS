@@ -90,23 +90,22 @@ module DataMemory(Address, WriteData, ByteSel, Clk, MemWrite, MemRead, ReadData)
                     
             end else if(ByteSel == 'b01) begin //for lb
                 if(Address[1:0] == 'b00) //Index byte 0
-                    ReadData <= memory[Address[9:2]][7:0];
-                    
+                    ReadData <= {{24{memory[Address[9:2]][7]}}, memory[Address[9:2]][7:0]};
                 else if(Address[1:0] == 'b01) //Index byte 1
-                    ReadData <= memory[Address[9:2]][15:8];
+                    ReadData <= {{24{memory[Address[9:2]][15]}}, memory[Address[9:2]][15:8]};
                     
                 else if(Address[1:0] == 'b10) //Index byte 2
-                    ReadData <= memory[Address[9:2]][23:16];
+                    ReadData <= {{24{memory[Address[9:2]][15]}}, memory[Address[9:2]][23:16]};
                     
                 else if(Address[1:0] == 'b11) //Index byte 3
-                    ReadData <= memory[Address[9:2]][31:24];
+                    ReadData <= {{24{memory[Address[9:2]][15]}}, memory[Address[9:2]][31:24]};
                     
             end else if(ByteSel == 'b11) begin //for load half-word
                 if(Address[1:0] == 'b00)      //Index word 1
-                    ReadData <= memory[Address[9:2]][15:0];
+                    ReadData <= {{16{memory[Address[9:2]][15]}}, memory[Address[9:2]][15:0]};
                     
                 else if(Address[1:0] == 'b10) // Index word 2
-                    ReadData <= memory[Address[9:2]][31:16]; 
+                    ReadData <= {{16{memory[Address[9:2]][15]}}, memory[Address[9:2]][31:16]}; 
             end
         end else begin
             ReadData <= 32'd0;
