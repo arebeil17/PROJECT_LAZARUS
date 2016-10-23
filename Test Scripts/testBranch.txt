@@ -5,7 +5,7 @@ main:
 		addi	$t1,	$0,		4
 		addi	$t2,	$0,		9
 		addi	$t3,	$0,		-9
-		addi	$t4,	$0,		10
+		addi	$t4,	$0,		-9
 		addi	$s0,	$0,		0
 		addi	$s1,	$0,		0
 		addi	$s2,	$0,		0
