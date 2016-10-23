@@ -17,7 +17,7 @@ module Mod_Clk_Div(In, Clk, Rst, ClkOut);
     reg Next_L = 0; //tracks level change/update
     
     //Divider constants for divider counter
-    parameter DivVal_0  = 50000000,  //Constant for 1 Hz 
+    parameter DivVal_0  = 100000000,  //Constant for 0.5 Hz 
               DivVal_1  = 45000000,  //Constant for 1.1111 Hz
               DivVal_2  = 40000000,  //Constant for 1.25 Hz
               DivVal_3  = 35000000,  //Constant for 1.4286 Hz
