@@ -94,7 +94,7 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister,
 	   registers[31] = 32'b00000000000000000000000000000000;
 	end
 
-    always @(posedge Reset) begin
+    /*always @(posedge Reset) begin
         registers[0] =  32'b00000000000000000000000000000000;
         registers[1] =  32'b00000000000000000000000000000001;
         registers[2] =  32'b00000000000000000000000000000000;
@@ -127,18 +127,15 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister,
         registers[29] = 32'b00000000000000000000000000000000;
         registers[30] = 32'b00000000000000000000000000000000;
         registers[31] = 32'b00000000000000000000000000000000;
-    end
+    end*/
 
     always @(negedge Clk) begin
-        if(~Reset)begin
-            if(RegWrite)registers[WriteRegister] <= WriteData;
-        end
+        if(RegWrite)registers[WriteRegister] <= WriteData;
     end
+    
     //Should not be clocked  else will cause intermittent delays on reads
     always @(ReadRegister1, ReadRegister2) begin
-        if(~Reset) begin
-            ReadData1 <= registers[ReadRegister1];
-            ReadData2 <= registers[ReadRegister2];
-        end
+        ReadData1 <= registers[ReadRegister1];
+        ReadData2 <= registers[ReadRegister2];
     end
 endmodule
