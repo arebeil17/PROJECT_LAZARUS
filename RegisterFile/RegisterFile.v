@@ -130,15 +130,11 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister,
     end
 
     always @(negedge Clk) begin
-        if(~Reset)begin
             if(RegWrite)registers[WriteRegister] <= WriteData;
-        end
     end
     //Should not be clocked  else will cause intermittent delays on reads
     always @(ReadRegister1, ReadRegister2) begin
-        if(~Reset) begin
             ReadData1 <= registers[ReadRegister1];
             ReadData2 <= registers[ReadRegister2];
-        end
     end
 endmodule
