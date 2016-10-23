@@ -51,6 +51,12 @@ module DataMemory(Address, WriteData, ByteSel, Clk, MemWrite, MemRead, ReadData)
     reg [31:0] memory [0:255]; // 256x32 Registers
     
     initial begin
+        memory[0] <= 32'd0;
+        memory[1] <= 32'd1;
+        memory[2] <= 32'd2;
+        memory[3] <= 32'd3;
+        memory[4] <= 32'd4;
+        memory[5] <= -32'd1;
     end
 
     always @(posedge Clk) begin
