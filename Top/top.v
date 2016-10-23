@@ -63,16 +63,15 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     
     // Output 8 x Seven Segment
     Two4DigitDisplay Display(
-        .Clk(Clk),
-        .RegWrite(RegWrite), 
+        .Clk(Clk), 
         .NumberA(AluOutReg), 
         .NumberB(PC_OutReg), 
         .out7(out7), 
         .en_out(en_out));
-     Reg32 WriteOutput(
+     Reg32 AluOutput(
         .Clk(ClkOut), 
         .Rst(Rst), 
-        .data(MemToReg_Out), 
+        .data(ALU_Out), 
         .Output(AluOutReg));
      Reg32 PCOutput(
         .Clk(ClkOut), 
