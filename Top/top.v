@@ -25,6 +25,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         MemToReg_Out,   // Output
         RFAND_Out,      // Output of the RFAND
         AluOutReg,
+        WriteOutReg,
         PC_OutReg,
         JumpShift_Out,
         BranchAdd_Out,
@@ -63,16 +64,17 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     
     // Output 8 x Seven Segment
     Two4DigitDisplay Display(
-        .Clk(Clk), 
-        .NumberA(AluOutReg), 
+        .Clk(Clk),
+        .RegWrite(RegWrite), 
+        .NumberA(WriteOutReg), 
         .NumberB(PC_OutReg), 
         .out7(out7), 
         .en_out(en_out));
-     Reg32 AluOutput(
+     Reg32 WriteOutput(
         .Clk(ClkOut), 
         .Rst(Rst), 
-        .data(ALU_Out), 
-        .Output(AluOutReg));
+        .data(MemToReg_Out), 
+        .Output(WriteOutReg));
      Reg32 PCOutput(
         .Clk(ClkOut), 
         .Rst(Rst), 
