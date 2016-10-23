@@ -105,7 +105,8 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                      BLTZ_BGEZ  = 'b011100, // BGEZ     | 11100
                      BGTZ       = 'b011101, // BGTZ     | 11101
                      BLEZ       = 'b011110, // BLEZ     | 11110
-                     JR         = 'b011111; // JR       |011111
+                     JR         = 'b011111, // JR       |011111
+                     LUI        = 'b100000;
     
     reg [5:0] Operation;
     reg [31:0] temp_1 = 0, temp_2 = 0;
@@ -291,33 +292,41 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                     ALUResult <= 1;
             end
             BLTZ_BGEZ: begin
+                RegWrite <= 0;
                 if(B == 0) begin //Perform BLTZ if rt = 0
-                    if( A < 0)
+                    if(A < 0)
                         ALUResult <= 0;  //Branch triggered by Zero output
                     else
                         ALUResult <= 1;
                 end
                 else begin //else perform BGEZ if rt = 1
-                      if( A >= 0)
+                      if(A >= 0)
                           ALUResult <= 0; //Branch triggered by Zero output
                       else
                           ALUResult <= 1;
                 end
             end
             BGTZ: begin
-                if( A > 0) //If rs is greater than zero branch
+                RegWrite <= 0;
+                if(A > 0) //If rs is greater than zero branch
                     ALUResult <= 0;  //Branch triggered by Zero output
                 else
                     ALUResult <= 1;  //Branch triggered by Zero output
             end
             BLEZ: begin
+                RegWrite <= 0;
                 if( A < 0) //If rs is less than zero branch
                     ALUResult <= 0;  //Branch triggered by Zero output
                 else
                     ALUResult <= 1;  //Branch triggered by Zero output
             end
             JR: begin
+                RegWrite <= 0;
                 ALUResult <= 0;
+            end
+            LUI: begin
+                RegWrite <= 1;
+                ALUResult <= B << 16;
             end
             default: begin
             	RegWrite <= 0; // Write NOT Concur

@@ -28,7 +28,8 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      ALUOP_BNE      = 'b01111, // BNE
                      ALUOP_BLTZ_BGEZ= 'b10000, // BGEZ
                      ALUOP_BGTZ     = 'b10001, // BGTZ
-                     ALUOP_BLEZ     = 'b10010; // BLEZ
+                     ALUOP_BLEZ     = 'b10010, // BLEZ
+                     ALUOP_LUI      = 'b10011; // LUI
     				 
     //Instruction Function code 6 bit input definitions
     //---------------Dont Care FUNCTION FIELDS                
@@ -92,7 +93,8 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                      BLTZ_BGEZ  = 'b011100, // BLTZ_BGEZ     | 11100
                      BGTZ       = 'b011101, // BGTZ     | 11101
                      BLEZ       = 'b011110, // BLEZ     | 11110
-                     JR         = 'b011111; // JR       |011111
+                     JR         = 'b011111, // JR       |011111
+                     LUI        = 'b100000; // LUI
 
                      
 //    reg [3:0] State = DC;        //init dont care
@@ -243,6 +245,9 @@ module ALU_Controller(Rst, AluOp, Funct, ALUControl);
                 end
                 ALUOP_BLEZ: begin // BLEZ
                     ALUControl <= BLEZ;
+                end
+                ALUOP_LUI: begin // LUI
+                    ALUControl <= LUI;
                 end
                 //default: begin
                 //    ALUControl <= ADD;
