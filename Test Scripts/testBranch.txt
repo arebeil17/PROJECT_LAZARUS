@@ -17,7 +17,7 @@ loop0:
 loop1:
 		bne		$s1,	$0, 	loop2
 		addi	$t1,	$t1,	-1
-		slt		$s1,	$t1,	$t0
+		slt		$s1,	$t1,	$0
 		j		loop1
 loop2:
 		blez	$t2,	loop3

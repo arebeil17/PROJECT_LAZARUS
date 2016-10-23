@@ -4,10 +4,8 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
     input[5:0] OpCode;
     
     output reg RegWrite, AluSrc, MemWrite, MemRead, Branch, SignExt, Jump, JumpMux;
-    output reg [1:0] RegDst, MemToReg;
+    output reg [1:0] RegDst, MemToReg, ByteSel;
     output reg [4:0] AluOp;
-    output reg [1:0] ByteSel; //Check in DM for info
-                              //Update control signals in all states to include byte sel  
                             
     localparam [5:0] INITIAL = 'b111111,    // INITIAL
                     OP_000000 = 'b000000,   // Most R-type Instructions, JR
@@ -46,7 +44,7 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 MemToReg <= 2'b00; SignExt <= 0; AluOp <= 'b00001;
                 Jump <= 0; JumpMux <= 0;
             end
-            OP_000000: begin // Most R-type Instructions and JR
+            OP_000000: begin // Special (R-type Instructions and JR)
                 // TODO: JR Implementation, Can't set Jump <= 1 As PC+4 Does Not Get Written for all other commands
                 RegDst <= 2'b00; RegWrite <= 1; AluSrc <= 0; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
@@ -137,13 +135,13 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b00101;
                 Jump <= 0; JumpMux <= 0;
             end
-            OP_001111: begin // LUI - NOT Tested
+            OP_001111: begin // LUI - Not Tested
                 RegDst <= 2'b01; RegWrite <= 1; AluSrc <= 1;
                 MemWrite <= 0; MemRead <= 0; Branch <= 0;
                 MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b01010;
                 Jump <= 0; JumpMux <=0;
             end
-            OP_011100: begin
+            OP_011100: begin // SPECIAL #2
                 RegDst <= 2'b00; RegWrite <= 1; AluSrc <= 0; 
                 MemWrite <= 0; MemRead <= 0; Branch <= 0; 
                 MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b01100;
@@ -160,40 +158,40 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
                 RegDst <= 2'b01; RegWrite <= 1; AluSrc <= 1;
                 MemWrite <= 0; MemRead <= 1; Branch <= 0;
                 MemToReg <= 2'b01; SignExt <= 1; AluOp <= 'b00001; // Send ADDI to ALU Controller
-                Jump <= 0; JumpMux <= 0;
+                Jump <= 0; JumpMux <= 0; ByteSel <= 2'b01;
             end
             // TODO: NEED TO FIND SOLUTION TO BE MEMORY READ/WRITE SAFE
             OP_100001: begin // LH
                 RegDst <= 2'b01; RegWrite <= 1; AluSrc <= 1;
                 MemWrite <= 0; MemRead <= 1; Branch <= 0;
                 MemToReg <= 2'b01; SignExt <= 1; AluOp <= 'b00001; // Send ADDI to ALU Controller
-                Jump <= 0; JumpMux <= 0;
+                Jump <= 0; JumpMux <= 0; ByteSel <= 2'b11;
             end
             OP_100011: begin // LW
                 RegDst <= 2'b01; RegWrite <= 1; AluSrc <= 1;
                 MemWrite <= 0; MemRead <= 1; Branch <= 0;
                 MemToReg <= 2'b01; SignExt <= 1; AluOp <= 'b00001; // Send ADDI to ALU Controller
-                Jump <= 0; JumpMux <= 0;
+                Jump <= 0; JumpMux <= 0; ByteSel <= 2'b00;
             end
             // TODO: NEED TO FIND SOLUTION TO BE MEMORY READ/WRITE SAFE
             OP_101000: begin // SB
                 RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 1;
                 MemWrite <= 1; MemRead <= 0; Branch <= 0;
                 MemToReg <= 2'b01; SignExt <= 1; AluOp <= 'b00001; // Send ADDI to ALU Controller
-                Jump <= 0; JumpMux <= 0;
+                Jump <= 0; JumpMux <= 0; ByteSel <= 2'b01;
             end
             // TODO: NEED TO FIND SOLUTION TO BE MEMORY READ/WRITE SAFE
             OP_101001: begin // SH
                 RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 1;
                 MemWrite <= 1; MemRead <= 0; Branch <= 0;
                 MemToReg <= 2'b01; SignExt <= 1; AluOp <= 'b00001; // Send ADDI to ALU Controller
-                Jump <= 0; JumpMux <= 0;
+                Jump <= 0; JumpMux <= 0; ByteSel <= 2'b11;
             end
             OP_101011: begin // SW
             	RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 1;
             	MemWrite <= 1; MemRead <= 0; Branch <= 0;
             	MemToReg <= 2'b01; SignExt <= 1; AluOp <= 'b00001; // Send ADDI to ALU Controller
-            	Jump <= 0; JumpMux <= 0;
+            	Jump <= 0; JumpMux <= 0; ByteSel <= 2'b00;
             end
         endcase
      end

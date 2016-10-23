@@ -49,7 +49,9 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         Jump,               // Jump Control
         SignExt,            // Sign Extend Control
         BranchAnd_Out,      // PC Jump/Increment Mux Control
-        JumpMuxControl;
+        JumpMuxControl,
+        ALU_Jump,
+        JumpOr_Out;
     wire [1:0] MemToReg, RegDst;
     wire [5:0] ALUControl;  // ALU Controller to ALU Data
     wire [4:0] ALUOp;       // Controller to ALU Controller Data
@@ -155,7 +157,8 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .HiLoEn(HiLoEn),
         .HiLoWrite(HiLoWrite), 
         .HiLoRead(HiLoRead),
-        .RegWrite(ALU_RegWrite));
+        .RegWrite(ALU_RegWrite),
+        .Jump(ALU_Jump));
     HiLoRegister HiLo(
         .WriteEnable(HiLoEn) , 
         .WriteData(HiLoWrite), 
@@ -188,7 +191,7 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .Out(BranchShift_Out),
         .Shift(32'd2));
     ShiftLeft JumpShift(
-        .In(IM_Out[25:0]),
+        .In({8'b0,IM_Out[25:0]}),
         .Out(JumpShift_Out),
         .Shift(32'd2));
     Adder BranchAdder(
@@ -199,6 +202,10 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .InA(ALU_Zero),
         .InB(Branch),
         .Out(BranchAnd_Out));
+    OR JumpOr(
+        .InA(Jump),
+        .InB(ALU_Jump),
+        .Out(JumpOr_Out));
     Mux32Bit2To1 JumpMux(
         .In0({PCI_Out[31:28],JumpShift_Out[27:0]}),
         .In1(RF_RD1),
@@ -210,5 +217,5 @@ module top(Clk, Rst, out7, en_out, ClkOut);
         .In1(BranchAdd_Out),
         .In2(JumpMux_Out),
         .In3(32'b0),
-        .sel({Jump,BranchAnd_Out}));
+        .sel({JumpOr_Out,BranchAnd_Out}));
 endmodule

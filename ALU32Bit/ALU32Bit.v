@@ -61,7 +61,7 @@
 // 
 ////////////////////////////////////////////////////////////////////////////////
 
-module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiLoRead, RegWrite);
+module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiLoRead, RegWrite, Jump);
 
 	input [5:0] ALUControl; // control bits for ALU operation
 	input [31:0] A, B;	    // inputs
@@ -70,7 +70,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
     
     output reg HiLoEn = 0;
     output reg [63:0] HiLoWrite = 0;
-    output reg RegWrite;
+    output reg Jump, RegWrite;
 	output reg [31:0] ALUResult;	// answer
 	output Zero;	    // Zero=1 if ALUResult == 0
        
@@ -116,18 +116,22 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
         HiLoEn = 0;
         case(Operation)
             ADD: begin
+                Jump <= 0;
                 RegWrite <= 1; // Write Concur
                 ALUResult = $signed(A) + $signed(B);
             end
             ADDU: begin
+                Jump <= 0;
                 RegWrite <= 1; // Write Concur
                 ALUResult = A + B;
             end
             SUB: begin
+                Jump <= 0;
             	RegWrite <= 1; // Write Concur
                 ALUResult = $signed(A) - $signed(B);
             end
             MULT: begin
+                Jump <= 0;
             	RegWrite <= 0; // Write NOT Concur
             	HiLoEn = 1;
                 temp64 = $signed(A) * $signed(B);
@@ -135,6 +139,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 ALUResult = 0; //No ALU Result defaults to zero;
             end
             MULTU: begin
+                Jump <= 0;
                 RegWrite <= 0; // Write NOT Concur
                 HiLoEn = 1;
                 temp64 = A * B;
@@ -142,6 +147,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 ALUResult <= 0; //No ALU Result defaults to zero;
             end
             AND: begin
+                Jump <= 0;
             	RegWrite <= 1; // Write Concur
                 ALUResult <= A & B;
             end
@@ -150,22 +156,27 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 ALUResult <= A | B;
             end
             NOR: begin
+                Jump <= 0;
             	RegWrite <= 1; // Write Concur
                 ALUResult <= ~(A | B);
             end
             XOR: begin
+                Jump <= 0;
             	RegWrite <= 1; // Write Concur
                 ALUResult <= A ^ B;
             end
             SLL: begin
+                Jump <= 0;
             	RegWrite <= 1; // Write Concur
                 ALUResult <= B << Shamt;
             end
             SLLV: begin
+                Jump <= 0;
                 RegWrite <= 1; // Write Concur
                 ALUResult <= B << A;
             end
             SRL: begin
+                Jump <= 0;
             	RegWrite <= 1; // Write Concur
                 if(A == 0) begin
                     ALUResult <= B >> Shamt;
@@ -179,6 +190,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 end
             end
             SRLV: begin
+                Jump <= 0;
                 RegWrite <= 1; // Write Concur
                 if(Shamt == 0) begin
                     ALUResult = B >> A;
@@ -192,14 +204,17 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 end
             end
             SLT: begin
+                Jump <= 0;
             	RegWrite <= 1; // Write Concur
-                ALUResult = ($signed(A) < $signed(B)) ? (1):(0); 
+                ALUResult = ($signed(A) < $signed(B)) ? 1 : 0; 
             end
             SLTU: begin
+                Jump <= 0;
                 RegWrite <= 1; // Write Concur
-                ALUResult = ($unsigned(A) < $unsigned(B)) ? (1):(0);
+                ALUResult = ($unsigned(A) < $unsigned(B)) ? 1 : 0;
             end
             MOVN: begin
+                Jump <= 0;
                 if(B != 0) begin
                     RegWrite <= 1; // Write Concur
                     ALUResult = A;
@@ -208,6 +223,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
             	end
             end
             MOVZ: begin
+                Jump <= 0;
                 if(B == 0) begin
                     RegWrite <= 1; // Write Concur
                     ALUResult <= A;
@@ -216,18 +232,22 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 end
             end
             SRA: begin //Shift right arithmetic
+                Jump <= 0;
                 RegWrite <= 1; // Write Concur
                 ALUResult = (B[30:0] >> Shamt) | (B[31] << 31);
             end
             SRAV: begin
+                Jump <= 0;
             	RegWrite <= 1; // Write Concur
                 ALUResult = (B[30:0] >> A) | (B[31] << 31);
             end
             MUL: begin
+                Jump <= 0;
             	RegWrite <= 1; // Write Concur
                 ALUResult <= ($signed(A) * $signed(B));
             end
             MADD: begin
+                Jump <= 0;
             	RegWrite <= 0; // Write NOT Concur
             	HiLoEn = 1;
                 temp64 = $signed(A) * $signed(B);
@@ -235,6 +255,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 ALUResult <= 0; //No ALU Result defaults to zero;
             end
             MSUB: begin
+                Jump <= 0;
             	RegWrite <= 0; // Write NOT Concur
             	HiLoEn = 1;
                 temp64 = $signed(A) * $signed(B);
@@ -242,6 +263,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 ALUResult <= 0; //No ALU Result defaults to zero;
             end
             SEH_SEB: begin
+                Jump <= 0;
             	RegWrite <= 1; // Write Concur
                 if(Shamt == 'b11000) begin
                     ALUResult = {{16{B[15]}},B[15:0]};
@@ -250,41 +272,50 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                 end
             end
             MFHI: begin
+                Jump <= 0;
                 RegWrite <= 1; // Write Concur
                 ALUResult = HiLoRead[63:32];
             end
             MFLO: begin
+                Jump <= 0;
                 RegWrite <= 1; // Write Concur
                 ALUResult = HiLoRead[31:0];
             end
             MTHI: begin
+                Jump <= 0;
                 RegWrite <= 0; // Write NOT Concur
                 HiLoEn = 1;
                 HiLoWrite = {A,HiLoRead[31:0]};
                 ALUResult = 0;
             end
             MTLO: begin
+                Jump <= 0;
                 RegWrite <= 0; // Write NOT Concur
                 HiLoWrite = {HiLoRead[63:32],A};
                 HiLoEn = 1;
             end
-            MFHI: begin  
+            MFHI: begin
+                Jump <= 0;
                 ALUResult <= HiLoRead[63:32];
             end
-            MFLO: begin  
+            MFLO: begin
+                Jump <= 0;
                 ALUResult <= HiLoRead[31:0];
             end
-            MTHI: begin  
-               HiLoEn = 1;
-               HiLoWrite = {HiLoRead[63:32],A};
-               ALUResult <= 0;
+            MTHI: begin
+                Jump <= 0;
+                HiLoEn = 1;
+                HiLoWrite = {HiLoRead[63:32],A};
+                ALUResult <= 0;
             end
             MTLO: begin
+                Jump <= 0;
                 HiLoEn = 1;
                 HiLoWrite[31:0] = {HiLoRead[63:32],A}; 
                 ALUResult <= 0;
             end 
             EQ: begin //Checks if A and B are equal
+                Jump <= 0;
                 RegWrite <= 0;
                 if(A != B)
                     ALUResult <= 0;
@@ -292,43 +323,49 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
                     ALUResult <= 1;
             end
             BLTZ_BGEZ: begin
+                Jump <= 0;
                 RegWrite <= 0;
                 if(B == 0) begin //Perform BLTZ if rt = 0
-                    if(A < 0)
+                    if($signed(A) < 0)
                         ALUResult <= 0;  //Branch triggered by Zero output
                     else
                         ALUResult <= 1;
                 end
                 else begin //else perform BGEZ if rt = 1
-                      if(A >= 0)
+                      if($signed(A) >= 0)
                           ALUResult <= 0; //Branch triggered by Zero output
                       else
                           ALUResult <= 1;
                 end
             end
             BGTZ: begin
+                Jump <= 0;
                 RegWrite <= 0;
-                if(A > 0) //If rs is greater than zero branch
+                if($signed(A) > 0) //If rs is greater than zero branch
                     ALUResult <= 0;  //Branch triggered by Zero output
                 else
                     ALUResult <= 1;  //Branch triggered by Zero output
             end
             BLEZ: begin
+                Jump <= 0;
                 RegWrite <= 0;
-                if( A < 0) //If rs is less than zero branch
+                if($signed(A) <= 0) //If rs is less than zero branch
                     ALUResult <= 0;  //Branch triggered by Zero output
                 else
                     ALUResult <= 1;  //Branch triggered by Zero output
             end
             JR: begin
+                Jump <= 1;
                 RegWrite <= 0;
                 ALUResult <= 0;
             end
             LUI: begin
+                Jump <= 0;
                 RegWrite <= 1;
                 ALUResult <= B << 16;
             end
             default: begin
+                Jump <= 0;
             	RegWrite <= 0; // Write NOT Concur
                 ALUResult <= 0;
                 HiLoEn <= 0;
@@ -336,7 +373,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero, HiLoEn, HiLoWrite, HiL
         endcase
     end
     
-    assign Zero = (ALUResult == 0) ? (1):(0);
+    assign Zero = (ALUResult == 0) ?  1 :  0;
     
     always @(ALUControl, A, B, Shamt)begin
         Operation <= ALUControl;
