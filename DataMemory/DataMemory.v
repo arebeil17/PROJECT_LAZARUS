@@ -88,7 +88,7 @@ module DataMemory(Address, WriteData, ByteSel, Clk, MemWrite, MemRead, ReadData)
         end
     end
     
-    always @(negedge Clk) begin
+    always @(*) begin
         if(MemRead == 1) begin
             if(ByteSel == 'b00) begin
                 if(Address[1:0] == 'b00) //These byte indexing bits must be 00 for lw

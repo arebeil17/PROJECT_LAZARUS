@@ -25,7 +25,7 @@ module Reg32(Clk, Rst, data, Output);
     
     output reg [31:0] Output = 0;
     
-    always @(posedge Clk) begin
+    always @(negedge Clk) begin
         if(Rst)
             Output <= 0;
         else
