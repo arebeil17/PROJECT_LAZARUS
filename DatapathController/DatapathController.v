@@ -54,7 +54,7 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
             OP_000001: begin // BGEZ, BLTZ
                 RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 0;
                 MemWrite <= 0; MemRead <= 0; Branch <= 1;
-                MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b10000;
+                MemToReg <= 2'b11; SignExt <= 1; AluOp <= 'b10000;
                 Jump <= 0; JumpMux <= 0;
             end
             OP_000010: begin // J
@@ -72,25 +72,25 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
             OP_000100: begin // BEQ
                 RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 0;
                 MemWrite <= 0; MemRead <= 0; Branch <= 1;
-                MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b01110;
+                MemToReg <= 2'b11; SignExt <= 1; AluOp <= 'b01110;
                 Jump <= 0; JumpMux <= 0;
             end
             OP_000101: begin // BNE
                 RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 0;
                 MemWrite <= 0; MemRead <= 0; Branch <= 1;
-                MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b01111;
+                MemToReg <= 2'b11; SignExt <= 1; AluOp <= 'b01111;
                 Jump <= 0; JumpMux <= 0;
             end
             OP_000110: begin // BLEZ
                RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 0;
                 MemWrite <= 0; MemRead <= 0; Branch <= 1;
-                MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b10010;
+                MemToReg <= 2'b11; SignExt <= 1; AluOp <= 'b10010;
                 Jump <= 0; JumpMux <= 0;
             end
             OP_000111: begin // BGTZ
                 RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 0;
                 MemWrite <= 0; MemRead <= 0; Branch <= 1;
-                MemToReg <= 2'b00; SignExt <= 1; AluOp <= 'b10001;
+                MemToReg <= 2'b11; SignExt <= 1; AluOp <= 'b10001;
                 Jump <= 0; JumpMux <= 0;
             end
             OP_001000: begin // ADDI
@@ -177,20 +177,20 @@ module DatapathController(OpCode, RegDst, RegWrite, AluSrc, AluOp, MemWrite, Mem
             OP_101000: begin // SB
                 RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 1;
                 MemWrite <= 1; MemRead <= 0; Branch <= 0;
-                MemToReg <= 2'b01; SignExt <= 1; AluOp <= 'b00001; // Send ADDI to ALU Controller
+                MemToReg <= 2'b11; SignExt <= 1; AluOp <= 'b00001; // Send ADDI to ALU Controller
                 Jump <= 0; JumpMux <= 0; ByteSel <= 2'b01;
             end
             // TODO: NEED TO FIND SOLUTION TO BE MEMORY READ/WRITE SAFE
             OP_101001: begin // SH
                 RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 1;
                 MemWrite <= 1; MemRead <= 0; Branch <= 0;
-                MemToReg <= 2'b01; SignExt <= 1; AluOp <= 'b00001; // Send ADDI to ALU Controller
+                MemToReg <= 2'b11; SignExt <= 1; AluOp <= 'b00001; // Send ADDI to ALU Controller
                 Jump <= 0; JumpMux <= 0; ByteSel <= 2'b11;
             end
             OP_101011: begin // SW
             	RegDst <= 2'b01; RegWrite <= 0; AluSrc <= 1;
             	MemWrite <= 1; MemRead <= 0; Branch <= 0;
-            	MemToReg <= 2'b01; SignExt <= 1; AluOp <= 'b00001; // Send ADDI to ALU Controller
+            	MemToReg <= 2'b11; SignExt <= 1; AluOp <= 'b00001; // Send ADDI to ALU Controller
             	Jump <= 0; JumpMux <= 0; ByteSel <= 2'b00;
             end
         endcase
