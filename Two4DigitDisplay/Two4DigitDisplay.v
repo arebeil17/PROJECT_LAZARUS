@@ -9,12 +9,12 @@
 // Description: 
 //////////////////////////////////////////////////////////////////////////////////
 
-module Two4DigitDisplay(Clk, RegWrite, NumberA, NumberB, out7, en_out);
+module Two4DigitDisplay(Clk, NumberA, NumberB, out7, en_out);
 
     parameter NUM_WIDTH = 13;
 
-    input  Clk, RegWrite;
-    input  [NUM_WIDTH - 1:0] NumberA, NumberB;
+    input Clk;
+    input [NUM_WIDTH - 1:0] NumberA, NumberB;
     output [6:0] out7; //seg a, b, ... g
     output reg [7:0] en_out;
              
@@ -77,30 +77,10 @@ module Two4DigitDisplay(Clk, RegWrite, NumberA, NumberB, out7, en_out);
     //-- to display the number in the appropriate 7-segment digit
     always @(cnt) begin
         case(cnt[19:17])  //100MHz/(2^20) = 95.3 Hz
-            3'b000: begin if(RegWrite) begin 
-                             en_out <= 8'b11111110; in4 <= firstdigitA;
-                           end else begin 
-                             en_out <= 8'b11111111; in4 <= firstdigitA; 
-                           end
-                    end        
-           3'b001: begin if(RegWrite) begin 
-                            en_out <= 8'b11111101; in4 <= seconddigitA; 
-                         end else begin 
-                            en_out <= 8'b11111111; in4 <= seconddigitA; 
-                         end
-                   end      
-           3'b010: begin if(RegWrite) begin 
-                           en_out <= 8'b11111011; in4 <= thirddigitA; 
-                         end else begin 
-                           en_out <= 8'b11111111; in4 <= thirddigitA; 
-                         end
-                   end
-           3'b011: begin if(RegWrite) begin 
-                           en_out <= 8'b11110111; in4 <= forthdigitA; 
-                         end else begin 
-                           en_out <= 8'b11111111; in4 <= forthdigitA; 
-                         end
-                   end
+            3'b000: begin en_out <= 8'b11111110; in4 <= firstdigitA; end        
+            3'b001: begin en_out <= 8'b11111101; in4 <= seconddigitA; end
+            3'b010: begin en_out <= 8'b11111011; in4 <= thirddigitA; end
+            3'b011: begin en_out <= 8'b11110111; in4 <= forthdigitA;  end
             3'b100: begin en_out <= 8'b11101111; in4 <= firstdigitB; end
             3'b101: begin en_out <= 8'b11011111; in4 <= seconddigitB; end
             3'b110: begin en_out <= 8'b10111111; in4 <= thirddigitB; end

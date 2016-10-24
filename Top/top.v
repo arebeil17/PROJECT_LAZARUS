@@ -71,7 +71,6 @@ module top(Clk, Rst, out7, en_out, ClkOut);
     // Output 8 x Seven Segment
     Two4DigitDisplay Display(
         .Clk(Clk),
-        .RegWrite(RegWriteOut), 
         .NumberA(WriteOutReg), 
         .NumberB(PC_OutReg), 
         .out7(out7), 
